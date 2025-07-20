@@ -1,0 +1,37 @@
+# Use Ubuntu instead of Debian for better MinGW support
+FROM ubuntu:22.04
+
+# Install dependencies for Windows cross-compilation
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    git \
+    mingw-w64 \
+    g++-mingw-w64-x86-64 \
+    gcc-mingw-w64-x86-64 \
+    wget \
+    make \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure MinGW to use posix threading model for better C++11 support
+RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix && \
+    update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the source code into the container
+COPY . .
+
+# Build the project for Windows with posix threading model and static linking
+RUN cmake -S . -B build \
+    -DCMAKE_SYSTEM_NAME=Windows \
+    -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
+    -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
+    -DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++ -static" \
+    -DCMAKE_EXE_LINKER_FLAGS="-static-libgcc -static-libstdc++ -static" \
+    -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build --target my_game -j$(nproc)
+
+# Ensure the executable has the correct permissions
+RUN chmod +x /app/build/bin/my_game.exe

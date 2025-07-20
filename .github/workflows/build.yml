@@ -1,0 +1,63 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: Build for Linux and Windows
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Make build script executable
+      run: chmod +x build_all.sh
+
+    - name: Build both platforms
+      run: ./build_all.sh
+
+    - name: Package Linux
+      run: |
+        cd out/linux
+        tar czf ../../mygame-linux.tar.gz my_game
+        cd ../..
+
+    - name: Package Windows
+      run: |
+        cd out/windows  
+        zip ../../mygame-windows.zip my_game.exe
+        cd ../..
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          mygame-linux.tar.gz
+          mygame-windows.zip
+        body: |
+          # 🎮 Cross-Platform SFML Game ${{ github.ref_name }}
+          
+          ## ✨ Features
+          - ✅ **Linux & Windows** executables
+          - ✅ **Docker-based** build system
+          - ✅ **SFML built from source** with all dependencies
+          - ✅ **Static linking** - no DLL dependencies required
+          
+          ## 📦 Downloads
+          - **Linux**: `mygame-linux.tar.gz` (~1.3MB)
+          - **Windows**: `mygame-windows.zip` (~4.3MB)
+          
+          ## 🚀 How to Run
+          - **Linux**: Extract and run `./my_game`
+          - **Windows**: Extract and double-click `my_game.exe`
+          
+          ## 🎯 Demo
+          Shows a green circle in an 800x600 SFML window.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

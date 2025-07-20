@@ -1,0 +1,9 @@
+/build/
+/out/
+/sfml/
+/*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib

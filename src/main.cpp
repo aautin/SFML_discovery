@@ -1,38 +1,47 @@
-#include <SFML/Graphics.hpp>
+#include <stdio.h>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include "Character.hpp"
 
-int main()
-{
-    // Create the main window
-    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "My Game");
+void handleEvents(sf::RenderWindow &window) {
+    std::optional<sf::Event> event;
+	while ((event = window.pollEvent()))
+	{
+		if (event->is<sf::Event::Closed>())
+			window.close();
+	}
+}
 
-	// Create a circle shape
-	sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-    shape.setPosition(sf::Vector2f(350.f, 250.f));
-	
-    // Start the game loop
-    while (window.isOpen())
-    {
-        // Process events
-        std::optional<sf::Event> event;
-        while ((event = window.pollEvent()))
-        {
-            // Close window: exit
-            if (event->is<sf::Event::Closed>())
-                window.close();
-        }
+void updateGameLogic(Character &player) {
+	if (!player.isMoving())
+		player.setDirection(STEP_SIZE, STEP_SIZE);
+	else {
+		player.move();
+        player.setSprite();
+    }
+}
 
-        // Clear screen
-        window.clear();
+void renderGame(sf::RenderWindow &window, Character& player) {
+    window.clear();
+    window.draw(player.getSprite());
+    window.display();
+}
 
-        // Draw the shape
-        window.draw(shape);
+int main() {
+    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game Loop Example");
 
-        // Update the window
-        window.display();
+    sf::Texture player_texture;
+    if (!player_texture.loadFromFile("assets/1 Characters/1/D_Walk.png"))
+        return -1;
+    Character player(player_texture);
+
+    while (window.isOpen()) {
+        handleEvents(window);
+        updateGameLogic(player);
+        renderGame(window, player);
+        sf::sleep(sf::milliseconds(32)); // Environ 30 FPS
     }
 
-    return EXIT_SUCCESS;
+    return 0;
 }

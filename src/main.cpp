@@ -12,9 +12,6 @@ int main()
     shape.setFillColor(sf::Color::Green);
     shape.setPosition(sf::Vector2f(350.f, 250.f));
 	
-
-	// Add the shape to be drawn in the window
-	// (draw inside the game loop)
     // Start the game loop
     while (window.isOpen())
     {

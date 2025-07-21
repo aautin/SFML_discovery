@@ -1,12 +1,16 @@
-# Use an official Ubuntu as a parent image
-FROM ubuntu:latest
+# Use Ubuntu 20.04 for better GLIBC compatibility (GLIBC 2.31)
+FROM ubuntu:20.04
+
+# Set timezone to avoid interactive prompts
+ENV TZ=Europe/Paris
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
-    cmake \
     g++ \
     git \
+    wget \
     libx11-dev \
     libxcursor-dev \
     libxrandr-dev \
@@ -17,7 +21,23 @@ RUN apt-get update && \
     libxext-dev \
     libxi-dev \
     libgl1-mesa-dev \
-    libfreetype6-dev && \
+    libfreetype6-dev \
+    libxcb1-dev \
+    libxrender-dev \
+    libxfixes-dev \
+    libxau-dev \
+    libxdmcp-dev \
+    libbsd-dev \
+    libmd-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install CMake 3.25 (newer version required by SFML)
+RUN apt-get update && \
+    apt-get install -y gnupg software-properties-common && \
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - && \
+    echo 'deb https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    apt-get update && \
+    apt-get install -y cmake && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the working directory

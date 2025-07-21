@@ -19,13 +19,13 @@
 
 ```bash
 # Build both Linux and Windows executables
-./build_all.sh
+./build.sh
 
 # Build only Linux
-./build_all.sh linux
+./build.sh linux
 
 # Build only Windows
-./build_all.sh windows
+./build.sh windows
 ```
 
 ## 📁 Project Structure
@@ -39,7 +39,7 @@
 ├── out/
 │   ├── linux/             # Linux executable output
 │   └── windows/           # Windows executable output
-├── build_all.sh           # Main build script
+├── build.sh           # Main build script
 └── CMakeLists.txt         # CMake configuration
 ```
 
@@ -103,7 +103,7 @@ git submodule update --init --recursive
 
 2. Run the build:
 ```bash
-./build_all.sh
+./build.sh
 ```
 
 ## 📝 Download

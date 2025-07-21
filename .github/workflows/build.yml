@@ -21,10 +21,10 @@ jobs:
         submodules: true
 
     - name: Make build script executable
-      run: chmod +x build_all.sh
+      run: chmod +x build.sh
 
     - name: Build both platforms
-      run: ./build_all.sh
+      run: ./build.sh
 
     - name: Package Linux
       run: |
@@ -54,8 +54,8 @@ jobs:
           - ✅ **Static linking** - no DLL dependencies required
           
           ## 📦 Downloads
-          - **Linux**: `mygame-linux.tar.gz` (~1.3MB)
-          - **Windows**: `mygame-windows.zip` (~4.3MB)
+          - **Linux**: `mygame-linux.tar.gz`
+          - **Windows**: `mygame-windows.zip`
           
           ## 🚀 How to Run
           - **Linux**: Extract and run `./my_game`

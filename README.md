@@ -1,11 +1,5 @@
 # 🎮 Cross-Platform SFML Game
 
-## 🔧 Technical Details
-
-### Build System
-
-- **Linux Build**: Native GCC compilation in Ubuntu 22.04 containerbased game built with a robust cross-platform Docker build system that produces both Linux and Windows executables.
-
 ## ✨ Features
 
 - **Cross-platform builds**: Automatic generation of Linux and Windows executables
@@ -53,19 +47,10 @@ tar -x -f assets.tar.gz
 
 ## � Technical Details
 
-### Build System
 - **Linux Build**: Native GCC compilation in Ubuntu 22.04 container
 - **Windows Build**: MinGW-w64 cross-compilation with posix threading model
 - **SFML**: Built from source with all dependencies included
 - **Dependencies**: Automatically fetched and built (FreeType, OGG, Vorbis, FLAC)
-
-## 📊 Build Outputs
-
-After a successful build:
-- **Linux**: `./out/linux/my_game`
-- **Windows**: `./out/windows/my_game.exe`
-
-Both executables are self-contained and include all necessary SFML dependencies.
 
 ## 🎯 Game Features
 

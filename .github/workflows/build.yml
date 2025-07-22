@@ -26,24 +26,33 @@ jobs:
     - name: Build both platforms
       run: ./build.sh
 
+    - name: Extract assets
+      run: |
+        tar -xzf assets.tar.gz
+        ls -la  # Debug: vérifier l'extraction
+
     - name: Package Linux
       run: |
-        cd out/linux
-        tar czf ../../mygame-linux.tar.gz my_game
-        cd ../..
+        mkdir -p game/assets
+        cp -r assets/* game/assets/
+        cp out/linux/my_game game/
+        tar czf mygame-linux.tar.gz game
+        rm -rf game
 
     - name: Package Windows
       run: |
-        cd out/windows  
-        zip ../../mygame-windows.zip my_game.exe
-        cd ../..
+        mkdir -p game/assets
+        cp -r assets/* game/assets/
+        cp out/windows/my_game.exe game/
+        tar czf mygame-windows.tar.gz game
+        rm -rf game
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
           mygame-linux.tar.gz
-          mygame-windows.zip
+          mygame-windows.tar.gz
         body: |
           # 🎮 Cross-Platform SFML Game ${{ github.ref_name }}
           
@@ -55,13 +64,13 @@ jobs:
           
           ## 📦 Downloads
           - **Linux**: `mygame-linux.tar.gz`
-          - **Windows**: `mygame-windows.zip`
-          
+          - **Windows**: `mygame-windows.tar.gz`
+
           ## 🚀 How to Run
-          - **Linux**: Extract and run `./my_game`
-          - **Windows**: Extract and double-click `my_game.exe`
+          - Extract the archive : `tar -xf  {archivename}`
+          - Run `./game/my_game`
           
-          ## 🎯 Demo
-          Shows a green circle in an 800x600 SFML window.
+          ## 🎯 Game Features
+          - [README.md](https://github.com/aautin/game_from_scratch/blob/.../README.md)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

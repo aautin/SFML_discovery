@@ -17,21 +17,29 @@
 
 ### Building Both Platforms
 
+1. Clone the repository:
 ```bash
-# Build both Linux and Windows executables
+git clone https://github.com/aautin/game_from_scratch.git game_from_scratch
+cd game_from_scratch
+git submodule update --init --recursive
+```
+
+2. Extract the assets:
+```bash
+tar -x -f assets.tar.gz
+```
+
+3. Run the build:
+```bash
 ./build.sh
-
-# Build only Linux
-./build.sh linux
-
-# Build only Windows
-./build.sh windows
 ```
 
 ## 📁 Project Structure
 
 ```
 ├── src/                   # Main game source code
+├── assets/                # Extracted assets
+├── assets.tar.gz          # Archived assets
 ├── docker/
 │   ├── Dockerfile.linux   # Linux build configuration
 │   └── Dockerfile.windows # Windows cross-compilation configuration
@@ -39,7 +47,7 @@
 ├── out/
 │   ├── linux/             # Linux executable output
 │   └── windows/           # Windows executable output
-├── build.sh           # Main build script
+├── build.sh               # Main build script
 └── CMakeLists.txt         # CMake configuration
 ```
 
@@ -51,24 +59,6 @@
 - **SFML**: Built from source with all dependencies included
 - **Dependencies**: Automatically fetched and built (FreeType, OGG, Vorbis, FLAC)
 
-### Key Solutions Implemented
-
-1. **Threading Model Fix**: Using MinGW-w64 posix threading model instead of win32 to support C++11 `<mutex>` features
-2. **Robust File Copying**: Volume-based copying instead of `docker cp` for reliable file permissions
-3. **Complete Dependency Chain**: All SFML dependencies built from source for maximum compatibility
-
-### Windows Cross-Compilation
-
-The Windows build uses MinGW-w64 with the posix threading model:
-
-```dockerfile
-# Configure MinGW to use posix threading model for better C++11 support
-RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix && \
-    update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
-```
-
-This resolves the `__gthread_time_t` and related threading issues that occur with the default win32 threading model.
-
 ## 📊 Build Outputs
 
 After a successful build:
@@ -79,37 +69,21 @@ Both executables are self-contained and include all necessary SFML dependencies.
 
 ## 🎯 Game Features
 
-The current demo application:
-- Creates an SFML window (800x600)
-- Renders a green circle in the center
-- Handles window close events
-- Demonstrates basic SFML setup and rendering
+- Opens an SFML window
+- 2 players to play with (AWSD and Directional-Keys)
+- Grid-based movements
+- Simple grid-map based on a single tile
+- Absolutely no goal and no collision
 
-## 🛠️ Development
-
-### Prerequisites
+## 🛠️ Development prerequisites
 
 - Docker
 - Git
+- Tar 
 
-### Building from Source
-
-1. Clone the repository:
-```bash
-git clone https://github.com/aautin/game_from_scratch.git game_from_scratch
-cd game_from_scratch
-git submodule update --init --recursive
-```
-
-2. Run the build:
-```bash
-./build.sh
-```
-
-## 📝 Download
+## 🎮 Play the game
 
 Latest versions are available here:
-
 👉 [Releases](https://github.com/aautin/game_from_scratch/releases)
 
 No dependencies required. Download, extract, and run.

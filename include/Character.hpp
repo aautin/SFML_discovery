@@ -30,25 +30,22 @@ class Character
 				  const sf::Texture& arrow, const sf::Texture& shoot);
 		~Character();
 
-		unsigned long	getCurrentTimeMillisecond();
-
 		bool		isOnCooldown();
+		void		updateArrow(direction dir);
+
 		bool		isMoving();
 		bool		isShooting();
-		
+		bool		isIdle();
+
 		void		move();
 		void		shoot();
-
 		void		idle();
 
 		void		setMove(direction dir);
-		void		setArrow(direction dir);
 		void		setShoot();
-		void		setCurrentSprite();
-		void		setArrowSprite();
-		
-		void		disableSprite(sf::Sprite& sprite);
-		void		showSprite(sf::Sprite& sprite);
+		void		setIdle();
+
+		void		updateSprites();
 
 		sf::Sprite	getCurrentSprite();
 		sf::Sprite	getArrowSprite();
@@ -58,13 +55,11 @@ class Character
 		sf::Sprite		_idle;
 		sf::Sprite		_arrow;
 		
-		
 		direction		_move_direction;
 		int				_move_length;
 		unsigned long	_move_timestamp;
 		sf::Sprite		_walking;
-		
-		
+
 		direction		_shoot_direction;
 		int				_shoot_length;
 		unsigned long	_shoot_timestamp;

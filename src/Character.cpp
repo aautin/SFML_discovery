@@ -4,12 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include "Character.hpp"
 
-unsigned long Character::getCurrentTimeMillisecond()
-{
-    struct timeval tv;
-    gettimeofday(&tv,NULL);
-    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-}
 
 Character::Character(const sf::Texture& walking, const sf::Texture& idle,
 					 const sf::Texture& arrow, const sf::Texture& shoot)
@@ -50,6 +44,10 @@ bool	Character::isMoving()
 bool	Character::isShooting()
 {
 	return _shoot_length > 0;
+}
+bool	Character::isIdle()
+{
+	return !isMoving() && !isShooting();
 }
 void	Character::move()
 {
@@ -102,7 +100,6 @@ void	Character::shoot()
 		_anim_index = _anim_index + frames;
 		_shoot_length -= frames;
 	}
-	
 }
 void	Character::idle()
 {
@@ -180,13 +177,4 @@ sf::Sprite	Character::getCurrentSprite()
 sf::Sprite	Character::getArrowSprite()
 {
 	return _arrow;
-}
-
-void Character::disableSprite(sf::Sprite& sprite)
-{
-	sprite.setColor(sf::Color(255, 255, 255, 100));
-}
-void Character::showSprite(sf::Sprite& sprite)
-{
-	sprite.setColor(sf::Color(255, 255, 255, 255));
 }

@@ -11,19 +11,26 @@ unsigned long Character::getCurrentTimeMillisecond()
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-Character::Character(const sf::Texture& walking, const sf::Texture& idle, const sf::Texture& arrow) : _walking(walking), _idle(idle), _current(_idle), _arrow(arrow)
+Character::Character(const sf::Texture& walking, const sf::Texture& idle,
+					 const sf::Texture& arrow, const sf::Texture& shoot)
+	: _walking(walking), _idle(idle), _current(_idle), _arrow(arrow), _shoot(shoot)
 {
 	_position[0] = STEP_SIZE / 2;
 	_position[1] = STEP_SIZE / 2;
-	_arrow_direction = LEFT_ARROW;
 
-	_move_distance = 0;
+	_move_length = 0;
 	_move_timestamp = 0;
-	_anim_index = 0;
+	
+	_shoot_direction = LEFT_ARROW;
+	_shoot_timestamp = 0;
 	
 	_idle.setScale(sf::Vector2f(2.0f, 2.0f));
 	_walking.setScale(sf::Vector2f(2.0f, 2.0f));
+	_shoot.setScale(sf::Vector2f(2.0f, 2.0f));
+	
+	_cooldown = 0;
 
+	_anim_index = 0;
 	_current = _idle;
 	setCurrentSprite();
 	setArrowSprite();
@@ -32,26 +39,36 @@ Character::~Character()
 {
 }
 
+bool	Character::isOnCooldown()
+{
+	return getCurrentTimeMillisecond() <= _cooldown;
+}
 bool	Character::isMoving()
 {
-	return _move_distance > 0;
+	return _move_length > 0;
+}
+bool	Character::isShooting()
+{
+	return _shoot_length > 0;
 }
 void	Character::move()
 {
-	if (_move_distance <= 0 || (this->getCurrentTimeMillisecond() - _move_timestamp < WALKING_FRAME_TIME))
+	if (_move_length <= 0 || (this->getCurrentTimeMillisecond() - _move_timestamp < WALKING_FRAME_TIME))
 		return;
 
-	size_t moves = (this->getCurrentTimeMillisecond() - _move_timestamp) / WALKING_FRAME_TIME;
+	size_t frames = (this->getCurrentTimeMillisecond() - _move_timestamp) / WALKING_FRAME_TIME;
 	_move_timestamp = this->getCurrentTimeMillisecond();
-	_anim_index = (_anim_index + moves) % 6;
+	_anim_index = (_anim_index + frames) % 6;
 
-	int move_length = MOVE_SIZE * moves;
-	_move_distance -= move_length;
-	if (_move_distance <= 0) {
-		_move_distance = 0;
+	int move_length = MOVE_SIZE * frames;
+	if (_move_length - move_length <= 0) {
+		move_length = _move_length;
+		_move_length = 0;
 		_current = _idle;
 		_anim_index = 0;
 	}
+	else
+		_move_length -= move_length;
 
 	switch (_move_direction) {
 		case LEFT_MOVE:
@@ -70,6 +87,23 @@ void	Character::move()
 			break;
 	}
 }
+void	Character::shoot()
+{
+	if ((this->getCurrentTimeMillisecond() - _shoot_timestamp < ATTACK_FRAME_TIME))
+		return;
+
+	size_t frames = (this->getCurrentTimeMillisecond() - _shoot_timestamp) / ATTACK_FRAME_TIME;
+	_shoot_timestamp = this->getCurrentTimeMillisecond();
+	if (_shoot_length - frames <= 0) {
+		_shoot_length = 0;
+		_current = _idle;
+	}
+	else {
+		_anim_index = _anim_index + frames;
+		_shoot_length -= frames;
+	}
+	
+}
 void	Character::idle()
 {
 	if (this->getCurrentTimeMillisecond() - _move_timestamp < IDLE_FRAME_TIME)
@@ -81,15 +115,25 @@ void	Character::idle()
 }
 void	Character::setMove(direction dir)
 {
-	_move_timestamp = getCurrentTimeMillisecond();
 	_move_direction = dir;
-	_move_distance = STEP_SIZE;
+	_move_length = STEP_SIZE;
+	_move_timestamp = getCurrentTimeMillisecond();
+	_anim_index = 0;
 
 	_current = _walking;
 }
 void	Character::setArrow(direction dir)
 {
-	_arrow_direction = dir;
+	_shoot_direction = dir;
+}
+void	Character::setShoot()
+{
+	_shoot_length = 4;
+	_shoot_timestamp = getCurrentTimeMillisecond();
+	_anim_index = 0;
+	_cooldown = _shoot_timestamp + COOLDOWN;
+
+	_current = _shoot;
 }
 void	Character::setCurrentSprite()
 {
@@ -101,8 +145,9 @@ void	Character::setCurrentSprite()
 void Character::setArrowSprite()
 {
 	_arrow.setOrigin(sf::Vector2f(FRAME_SIZE / 2, FRAME_SIZE / 2));
-
-	switch (_arrow_direction) {
+	showSprite(_arrow);
+	
+	switch (_shoot_direction) {
 		case LEFT_ARROW:
 			_arrow.setRotation(sf::degrees(0));
 			_arrow.setPosition(sf::Vector2f(_position[0] - FRAME_SIZE + FRAME_SIZE, _position[1] + FRAME_SIZE));
@@ -119,9 +164,14 @@ void Character::setArrowSprite()
 			_arrow.setRotation(sf::degrees(270));
 			_arrow.setPosition(sf::Vector2f(_position[0] + FRAME_SIZE, _position[1] + FRAME_SIZE + FRAME_SIZE));
 			break;
-		default:
-			break;
 	}
+
+	if (isMoving() || isShooting() || isOnCooldown()) {
+		disableSprite(_arrow);
+		printf("Arrow disabled\n");
+	}
+	else
+		printf("Arrow enabled\n");
 }
 sf::Sprite	Character::getCurrentSprite()
 {
@@ -130,4 +180,13 @@ sf::Sprite	Character::getCurrentSprite()
 sf::Sprite	Character::getArrowSprite()
 {
 	return _arrow;
+}
+
+void Character::disableSprite(sf::Sprite& sprite)
+{
+	sprite.setColor(sf::Color(255, 255, 255, 100));
+}
+void Character::showSprite(sf::Sprite& sprite)
+{
+	sprite.setColor(sf::Color(255, 255, 255, 255));
 }

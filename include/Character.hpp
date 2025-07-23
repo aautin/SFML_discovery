@@ -4,10 +4,13 @@
 #define STEP_SIZE			32
 #define IDLE_FRAME_TIME		128
 #define WALKING_FRAME_TIME	64
+#define ATTACK_FRAME_TIME	128
 #define FRAME_SIZE			32
 
 #define MAP_WIDTH			20
 #define MAP_HEIGHT			20
+
+#define COOLDOWN			3000
 
 typedef enum eDirection {
 	LEFT_MOVE = static_cast<int>(sf::Keyboard::Key::A),
@@ -23,36 +26,52 @@ typedef enum eDirection {
 class Character
 {
 	public:
-		Character(const sf::Texture& walking, const sf::Texture& idle, const sf::Texture& arrow);
+		Character(const sf::Texture& walking, const sf::Texture& idle,
+				  const sf::Texture& arrow, const sf::Texture& shoot);
 		~Character();
 
 		unsigned long	getCurrentTimeMillisecond();
 
+		bool		isOnCooldown();
 		bool		isMoving();
+		bool		isShooting();
+		
 		void		move();
+		void		shoot();
+
 		void		idle();
 
 		void		setMove(direction dir);
 		void		setArrow(direction dir);
+		void		setShoot();
 		void		setCurrentSprite();
 		void		setArrowSprite();
 		
+		void		disableSprite(sf::Sprite& sprite);
+		void		showSprite(sf::Sprite& sprite);
+
 		sf::Sprite	getCurrentSprite();
 		sf::Sprite	getArrowSprite();
 
 	private:
 		float			_position[2];
-
-		direction		_arrow_direction;
+		sf::Sprite		_idle;
+		sf::Sprite		_arrow;
+		
+		
 		direction		_move_direction;
-		float			_move_distance;
+		int				_move_length;
 		unsigned long	_move_timestamp;
+		sf::Sprite		_walking;
+		
+		
+		direction		_shoot_direction;
+		int				_shoot_length;
+		unsigned long	_shoot_timestamp;
+		sf::Sprite		_shoot;
+	
+		unsigned long	_cooldown;
 
 		int				_anim_index;
-
-		sf::Sprite		_arrow;
-
-		sf::Sprite		_walking;
-		sf::Sprite		_idle;
 		sf::Sprite		_current;
 };

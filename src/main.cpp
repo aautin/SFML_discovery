@@ -14,10 +14,14 @@ void handleEvents(sf::RenderWindow &window, Character &player)
         else if (event->is<sf::Event::KeyPressed>()) {
             auto code = event->getIf<sf::Event::KeyPressed>()->code;
             direction dir = static_cast<direction>(code);
-            if ((dir == LEFT_MOVE || dir == RIGHT_MOVE || dir == UP_MOVE || dir == DOWN_MOVE) && !player.isMoving())
+            if ((dir == LEFT_MOVE || dir == RIGHT_MOVE || dir == UP_MOVE || dir == DOWN_MOVE)
+                && !player.isMoving() && !player.isShooting())
                 player.setMove(dir);
             if ((dir == LEFT_ARROW || dir == RIGHT_ARROW || dir == UP_ARROW || dir == DOWN_ARROW))
                 player.setArrow(dir);
+            if (code == sf::Keyboard::Key::Space
+                && !player.isMoving() && !player.isShooting() && !player.isOnCooldown())
+                player.setShoot();
         }
     }
 }
@@ -26,6 +30,8 @@ void updateGameLogic(Character &player)
 {
     if (player.isMoving())
         player.move();
+    else if (player.isShooting())
+        player.shoot();
     else
         player.idle();
 }
@@ -51,9 +57,8 @@ void prepareRender(Character &player)
 void renderGame(sf::RenderWindow& window, const std::vector<sf::Sprite>& map_sprites, Character& player)
 {
     window.clear();
-    for (const auto& sprite : map_sprites) {
+    for (const auto& sprite : map_sprites)
         window.draw(sprite);
-    }
     window.draw(player.getCurrentSprite());
     window.draw(player.getArrowSprite());
     window.display();
@@ -65,21 +70,23 @@ int main()
     std::vector<sf::Sprite> map_sprites;
     
     
-    sf::Texture map_texture, walking_texture, idle_texture, arrow_texture;
+    sf::Texture map_texture, walking_texture, idle_texture, arrow_texture, shoot_texture;
     if (!walking_texture.loadFromFile("assets/1 Characters/1/D_Walk.png")
         || !idle_texture.loadFromFile("assets/1 Characters/1/D_Idle.png")
         || !map_texture.loadFromFile("assets/2 Dungeon Tileset/1 Tiles/Tile_20.png")
-        || !arrow_texture.loadFromFile("assets/2 Dungeon Tileset/2 Objects/arrow.png"))
+        || !arrow_texture.loadFromFile("assets/2 Dungeon Tileset/2 Objects/arrow.png")
+        || !shoot_texture.loadFromFile("assets/1 Characters/1/S_Attack.png"))
         return -1;
     generateMapSprites(map_sprites, map_texture);
 
-    Character player(walking_texture, idle_texture, arrow_texture);
+    Character player(walking_texture, idle_texture, arrow_texture, shoot_texture);
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML Game Loop Example");
     while (window.isOpen()) {
         handleEvents(window, player);
         updateGameLogic(player);
         prepareRender(player);
         renderGame(window, map_sprites, player);
+        // sf::sleep(sf::milliseconds(500)); // Approx. 60 FPS
     }
 
     return 0;

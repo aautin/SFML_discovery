@@ -55,10 +55,16 @@ tar -x -f assets.tar.gz
 ## 🎯 Game Features
 
 - Opens an SFML window
-- 2 players to play with (AWSD and Directional-Keys)
-- Grid-based movements
-- Simple grid-map based on a single tile
-- Absolutely no goal and no collision
+- 1 character to control :
+	- AWSD movement keys
+	- shooting with space key
+	- cooldown after shooting
+- Character movements are grid-based
+- Absolutely no goal and no collision for now
+
+## 🗂️ Assets for development
+
+- [free-top-down-roguelike-game-kit-pixel-art](https://craftpix.net/freebies/free-top-down-roguelike-game-kit-pixel-art/)
 
 ## 🛠️ Development prerequisites
 

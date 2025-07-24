@@ -71,6 +71,12 @@ jobs:
           - Run `./game/my_game`
           
           ## 🎯 Game Features
-          - [README.md](https://github.com/aautin/game_from_scratch/blob/.../README.md)
+          - Opens an SFML window
+          - 1 character to control :
+            - AWSD movement keys
+            - shooting with space key
+            - cooldown after shooting
+          - Character movements are grid-based
+          - Absolutely no goal and no collision for now
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

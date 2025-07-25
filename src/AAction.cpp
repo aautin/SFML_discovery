@@ -11,7 +11,7 @@ AAction::~AAction() {}
 // ------------------- Getters -------------------
 sf::Sprite AAction::getFrame() const
 {
-	return _animation._obj;
+	return _animation.getFrame();
 }
 
 
@@ -28,14 +28,7 @@ void AAction::update(Game& game, Character& actor)
 	}
 
 	_lastUpdateTimestamp = currentTime;
-}
-
-void AAction::reset()
-{
-	_lastUpdateTimestamp = 0;
-	_animation._frameIndex = 0;
-	_animation._obj.setTextureRect(sf::IntRect(0, 0, _animation._frameSize, _animation._frameSize));
-	_animation._obj.setPosition(0, 0);
+	_animation.updateFrame();
 }
 
 bool AAction::isFinished() const

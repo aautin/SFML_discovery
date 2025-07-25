@@ -14,8 +14,7 @@ class AAction
 		AAction(Animation animation, std::vector<unsigned long> actionTimestamps, unsigned long endTimestamp);
 		~AAction();
 
-		sf::Sprite		update(Game& game, Character& actor);
-		void			reset();
+		void			update(Game& game, Character& actor);
 		sf::Sprite		getFrame() const;
 		bool			isFinished() const;
 

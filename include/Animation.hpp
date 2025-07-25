@@ -9,13 +9,10 @@ class Animation
 		Animation(size_t frameSize, size_t frameTime, size_t framesNbs, const sf::Texture& texture, unsigned long startTimestamp);
 		~Animation();
 
-		void			update();
-		void			reset(unsigned long startTimestamp = 0);
 		sf::Sprite		getFrame() const;
-
+		void			updateFrame();
+		
 	private:
-		void			setFrame();
-
 		unsigned long		_startTimestamp;
 		size_t				_frameIndex;
 		size_t const		_frameSize;

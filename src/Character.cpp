@@ -1,180 +1,65 @@
-#include <sys/time.h>
-
-#include <SFML/System/Angle.hpp>
-#include <SFML/Graphics.hpp>
 #include "Character.hpp"
 
-
-Character::Character(const sf::Texture& walking, const sf::Texture& idle,
-					 const sf::Texture& arrow, const sf::Texture& shoot)
-	: _walking(walking), _idle(idle), _current(_idle), _arrow(arrow), _shoot(shoot)
+Character::Character()
 {
-	_position[0] = STEP_SIZE / 2;
-	_position[1] = STEP_SIZE / 2;
-
-	_move_length = 0;
-	_move_timestamp = 0;
-	
-	_shoot_direction = LEFT_ARROW;
-	_shoot_timestamp = 0;
-	
-	_idle.setScale(sf::Vector2f(2.0f, 2.0f));
-	_walking.setScale(sf::Vector2f(2.0f, 2.0f));
-	_shoot.setScale(sf::Vector2f(2.0f, 2.0f));
-	
-	_cooldown = 0;
-
-	_anim_index = 0;
-	_current = _idle;
-	setCurrentSprite();
-	setArrowSprite();
+	_position[0] = 0;
+	_position[1] = 0;
+	_input = sf::Keyboard::Key::Unknown;
+	_action = std::make_unique<Idle>();
 }
+
 Character::~Character()
 {
 }
 
-bool	Character::isOnCooldown()
+void	Character::updateEvent(sf::Event const& event)
 {
-	return getCurrentTimeMillisecond() <= _cooldown;
+	if (event.is<sf::Event::KeyPressed>())
+		_input = event.getIf<sf::Event::KeyPressed>()->code;
+	else if (event.is<sf::Event::KeyReleased>()
+		&& _input == event.getIf<sf::Event::KeyReleased>()->code)
+		_input = sf::Keyboard::Key::Unknown;
 }
-bool	Character::isMoving()
-{
-	return _move_length > 0;
-}
-bool	Character::isShooting()
-{
-	return _shoot_length > 0;
-}
-bool	Character::isIdle()
-{
-	return !isMoving() && !isShooting();
-}
-void	Character::move()
-{
-	if (_move_length <= 0 || (this->getCurrentTimeMillisecond() - _move_timestamp < WALKING_FRAME_TIME))
-		return;
 
-	size_t frames = (this->getCurrentTimeMillisecond() - _move_timestamp) / WALKING_FRAME_TIME;
-	_move_timestamp = this->getCurrentTimeMillisecond();
-	_anim_index = (_anim_index + frames) % 6;
-
-	int move_length = MOVE_SIZE * frames;
-	if (_move_length - move_length <= 0) {
-		move_length = _move_length;
-		_move_length = 0;
-		_current = _idle;
-		_anim_index = 0;
-	}
-	else
-		_move_length -= move_length;
-
-	switch (_move_direction) {
-		case LEFT_MOVE:
-			_position[0] -= move_length;
-			break;
-		case RIGHT_MOVE:
-			_position[0] += move_length;
-			break;
-		case UP_MOVE:
-			_position[1] -= move_length;
-			break;
-		case DOWN_MOVE:
-			_position[1] += move_length;
-			break;
-		default:
-			break;
-	}
-}
-void	Character::shoot()
+void	Character::updateLogic(Game& game)
 {
-	if ((this->getCurrentTimeMillisecond() - _shoot_timestamp < ATTACK_FRAME_TIME))
-		return;
+	if (dynamic_cast<Idle*>(_action.get()) != nullptr
+		&& _input != sf::Keyboard::Key::Unknown)
+    {
+		switch (_input)
+		{
+			case sf::Keyboard::Key::A:
+				_action = std::make_unique<WalkLeft>();
+				break;
+			case sf::Keyboard::Key::D:
+				_action = std::make_unique<WalkRight>();
+				break;
+			case sf::Keyboard::Key::W:
+				_action = std::make_unique<WalkUp>();
+				break;
+			case sf::Keyboard::Key::S:
+				_action = std::make_unique<WalkDown>();
+				break;
+			case sf::Keyboard::Key::Space:
+				_action = std::make_unique<Shoot>();
+				break;
+			default:
+				break;
+		}
+    }
 
-	size_t frames = (this->getCurrentTimeMillisecond() - _shoot_timestamp) / ATTACK_FRAME_TIME;
-	_shoot_timestamp = this->getCurrentTimeMillisecond();
-	if (_shoot_length - frames <= 0) {
-		_shoot_length = 0;
-		_current = _idle;
-	}
-	else {
-		_anim_index = _anim_index + frames;
-		_shoot_length -= frames;
-	}
+	if (_action->isFinished())
+		_action = std::make_unique<Idle>();
+	_action->update(game, *this);
 }
-void	Character::idle()
-{
-	if (this->getCurrentTimeMillisecond() - _move_timestamp < IDLE_FRAME_TIME)
-		return;
 
-	size_t moves = (this->getCurrentTimeMillisecond() - _move_timestamp) / IDLE_FRAME_TIME;
-	_move_timestamp = this->getCurrentTimeMillisecond();
-	_anim_index = (_anim_index + moves) % 4;
-}
-void	Character::setMove(direction dir)
+sf::Sprite	Character::getRender() const
 {
-	_move_direction = dir;
-	_move_length = STEP_SIZE;
-	_move_timestamp = getCurrentTimeMillisecond();
-	_anim_index = 0;
-
-	_current = _walking;
-}
-void	Character::setArrow(direction dir)
-{
-	_shoot_direction = dir;
-}
-void	Character::setShoot()
-{
-	_shoot_length = 4;
-	_shoot_timestamp = getCurrentTimeMillisecond();
-	_anim_index = 0;
-	_cooldown = _shoot_timestamp + COOLDOWN;
-
-	_current = _shoot;
-}
-void	Character::setCurrentSprite()
-{
-	_current.setPosition(sf::Vector2f(_position[0], _position[1]));
-	_current.setTextureRect(
-		sf::IntRect(sf::Vector2i(_anim_index * FRAME_SIZE, 0), sf::Vector2i(FRAME_SIZE, FRAME_SIZE))
+	sf::Sprite frame = _action->getFrame();
+	frame.setPosition(sf::Vector2f(
+		frame.getPosition().x + _position[0],
+		frame.getPosition().y + _position[1])
 	);
-}
-void Character::setArrowSprite()
-{
-	_arrow.setOrigin(sf::Vector2f(FRAME_SIZE / 2, FRAME_SIZE / 2));
-	showSprite(_arrow);
-	
-	switch (_shoot_direction) {
-		case LEFT_ARROW:
-			_arrow.setRotation(sf::degrees(0));
-			_arrow.setPosition(sf::Vector2f(_position[0] - FRAME_SIZE + FRAME_SIZE, _position[1] + FRAME_SIZE));
-			break;
-		case RIGHT_ARROW:
-			_arrow.setRotation(sf::degrees(180));
-			_arrow.setPosition(sf::Vector2f(_position[0] + FRAME_SIZE + FRAME_SIZE, _position[1] + FRAME_SIZE));
-			break;
-		case UP_ARROW:
-			_arrow.setRotation(sf::degrees(90));
-			_arrow.setPosition(sf::Vector2f(_position[0] + FRAME_SIZE, _position[1] - FRAME_SIZE + FRAME_SIZE));
-			break;
-		case DOWN_ARROW:
-			_arrow.setRotation(sf::degrees(270));
-			_arrow.setPosition(sf::Vector2f(_position[0] + FRAME_SIZE, _position[1] + FRAME_SIZE + FRAME_SIZE));
-			break;
-	}
 
-	if (isMoving() || isShooting() || isOnCooldown()) {
-		disableSprite(_arrow);
-		printf("Arrow disabled\n");
-	}
-	else
-		printf("Arrow enabled\n");
-}
-sf::Sprite	Character::getCurrentSprite()
-{
-	return _current;
-}
-sf::Sprite	Character::getArrowSprite()
-{
-	return _arrow;
+	return frame;
 }

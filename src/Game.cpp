@@ -1,10 +1,11 @@
 #include "Game.hpp"
 
 Game::Game(std::string& title, size_t mapWidth, size_t mapHeight, sf::Texture& tile)
-	: _player(Character()), _mapWidth(mapWidth), _mapHeight(mapHeight)
+	: _player(Character()), _mapWidth(mapWidth), _mapHeight(mapHeight),
+	_tileSize(sf::Vector2u(tile.getSize().x, tile.getSize().y))
 {
 	sf::VideoMode mode(sf::Vector2u(
-		_mapWidth * tile.getSize().x, _mapHeight * tile.getSize().y
+		_mapWidth * _tileSize.x, _mapHeight * _tileSize.y
 	));
 	_window.create(mode, title);
 
@@ -81,4 +82,9 @@ void Game::drawMap(sf::RenderWindow& window)
 	std::vector<sf::Sprite>::const_iterator it;
 	for (it = _map.begin(); it != _map.end(); ++it)
 		window.draw(*it);
+}
+
+sf::Vector2u Game::getTileSize() const
+{
+	return _tileSize;
 }

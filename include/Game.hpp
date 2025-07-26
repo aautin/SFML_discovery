@@ -11,7 +11,9 @@ class Game
 		Game(std::string& title, size_t mapWidth, size_t mapHeight, sf::Texture& tile);
 		~Game();
 
-		void run();
+		void	run();
+
+		sf::Vector2u	getTileSize() const;
 
 	private:
 		void	updateEvents();
@@ -27,6 +29,7 @@ class Game
 		Character 			_player;
 
 		std::vector<sf::Sprite>	_map;
+		sf::Vector2u			_tileSize;
 		size_t					_mapWidth;
 		size_t					_mapHeight;
 };

@@ -18,9 +18,10 @@ class AAction
 		sf::Sprite		getFrame() const;
 		bool			isFinished() const;
 
-	private:
+	protected:
 		virtual void	execute(Game& game, Character& actor) = 0;
 
+	private:
 		std::vector<unsigned long>	_actionTimestamps;
 		unsigned long				_lastUpdateTimestamp;
 		unsigned long				_endTimestamp;

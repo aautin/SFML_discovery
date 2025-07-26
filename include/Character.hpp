@@ -16,6 +16,9 @@ class Character
 		void		updateLogic(Game& game);
 		sf::Sprite	getRender() const;
 
+		void			setPosition(float x, float y);
+		sf::Vector2f	getPosition() const;
+
 	private:
 		float						_position[2];
 		sf::Keyboard::Key			_input;

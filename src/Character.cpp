@@ -1,4 +1,5 @@
 #include "Character.hpp"
+#include "Move.hpp"
 
 Character::Character()
 {
@@ -23,26 +24,24 @@ void	Character::updateEvent(sf::Event const& event)
 
 void	Character::updateLogic(Game& game)
 {
-	if (dynamic_cast<Idle*>(_action.get()) != nullptr
-		&& _input != sf::Keyboard::Key::Unknown)
-    {
-		switch (_input)
-		{
+	if (_input != sf::Keyboard::Key::Unknown
+		&& dynamic_cast<Idle*>(_action.get()) != nullptr) {
+		switch (_input) {
 			case sf::Keyboard::Key::A:
-				_action = std::make_unique<WalkLeft>();
+				_action = std::make_unique<MoveLeft>(game.getTileSize());
 				break;
 			case sf::Keyboard::Key::D:
-				_action = std::make_unique<WalkRight>();
+				_action = std::make_unique<MoveRight>(game.getTileSize());
 				break;
 			case sf::Keyboard::Key::W:
-				_action = std::make_unique<WalkUp>();
+				_action = std::make_unique<MoveUp>(game.getTileSize());
 				break;
 			case sf::Keyboard::Key::S:
-				_action = std::make_unique<WalkDown>();
+				_action = std::make_unique<MoveDown>(game.getTileSize());
 				break;
-			case sf::Keyboard::Key::Space:
-				_action = std::make_unique<Shoot>();
-				break;
+			// case sf::Keyboard::Key::Space:
+			// 	_action = std::make_unique<Shoot>();
+			// 	break;
 			default:
 				break;
 		}
@@ -62,4 +61,15 @@ sf::Sprite	Character::getRender() const
 	);
 
 	return frame;
+}
+
+void Character::setPosition(float x, float y)
+{
+	_position[0] = x;
+	_position[1] = y;
+}
+
+sf::Vector2f Character::getPosition() const
+{
+	return sf::Vector2f(_position[0], _position[1]);
 }

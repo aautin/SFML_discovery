@@ -10,7 +10,7 @@ class Animation
 		~Animation();
 
 		sf::Sprite		getFrame() const;
-		void			updateFrame();
+		void			setFrame();
 		
 	private:
 		unsigned long		_startTimestamp;

@@ -14,18 +14,21 @@ class Game
 		void run();
 
 	private:
-		void updateEvents();
-		void updateLogic();
-		void updateRender();
+		void	updateEvents();
+		void	updateLogic();
+		void	updateRender();
 
-		bool isCharacterKey(sf::Keyboard::Key key);
+		bool	isCharacterKey(sf::Keyboard::Key key);
+
+		void	generateMap(const sf::Texture& map_texture);
+		void	drawMap(sf::RenderWindow& window);
 
 		sf::RenderWindow	_window;
 		Character 			_player;
 
-		sf::Sprite			_map;
-		size_t				_mapWidth;
-		size_t				_mapHeight;
+		std::vector<sf::Sprite>	_map;
+		size_t					_mapWidth;
+		size_t					_mapHeight;
 };
 
 #endif

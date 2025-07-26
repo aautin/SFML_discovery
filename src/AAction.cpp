@@ -28,7 +28,7 @@ void AAction::update(Game& game, Character& actor)
 	}
 
 	_lastUpdateTimestamp = currentTime;
-	_animation.updateFrame();
+	_animation.setFrame();
 }
 
 bool AAction::isFinished() const

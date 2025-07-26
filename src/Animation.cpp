@@ -7,7 +7,7 @@ Animation::Animation(size_t frameSize, size_t frameTime, size_t framesNbs,
 	: _frameIndex(0), _frameSize(frameSize), _frameTime(frameTime),
 	_framesNbs(framesNbs), _obj(texture), _startTimestamp(startTimestamp)
 {
-	updateFrame();
+	setFrame();
 }
 
 Animation::~Animation() {}
@@ -19,7 +19,7 @@ sf::Sprite Animation::getFrame() const
 	return _obj;
 }
 
-void Animation::updateFrame()
+void Animation::setFrame()
 {
 	unsigned long timeSinceStart = getCurrentTimeMillisecond() - _startTimestamp;
 	_frameIndex = (timeSinceStart / _frameTime) % _framesNbs;

@@ -1,16 +1,14 @@
 #include "Game.hpp"
 
 Game::Game(std::string& title, size_t mapWidth, size_t mapHeight, sf::Texture& tile)
-	: _player(Character()), _mapWidth(mapWidth), _mapHeight(mapHeight), _map(tile)
+	: _player(Character()), _mapWidth(mapWidth), _mapHeight(mapHeight)
 {
 	sf::VideoMode mode(sf::Vector2u(
 		_mapWidth * tile.getSize().x, _mapHeight * tile.getSize().y
 	));
 	_window.create(mode, title);
 
-	// To be continued...
-	// Here draw the entire map tiles in the _map attribute...
-
+	generateMap(tile);
 	updateRender();
 }
 
@@ -28,7 +26,7 @@ void Game::run()
 	}
 }
 
-bool isCharacterKey(sf::Keyboard::Key key)
+bool Game::isCharacterKey(sf::Keyboard::Key key)
 {
 	return key == sf::Keyboard::Key::A
 		|| key == sf::Keyboard::Key::D
@@ -59,7 +57,28 @@ void Game::updateLogic()
 void Game::updateRender()
 {
 	_window.clear();
-	_window.draw(_map);
+
+	drawMap(_window);
 	_window.draw(_player.getRender());
+
 	_window.display();
+}
+
+void Game::generateMap(const sf::Texture& map_texture)
+{
+	_map.clear();
+	for (size_t i = 0; i < _mapWidth; ++i) {
+		for (size_t j = 0; j < _mapHeight; ++j) {
+			sf::Sprite sprite(map_texture);
+			sprite.setPosition(sf::Vector2f(i * map_texture.getSize().x, j * map_texture.getSize().y));
+			_map.push_back(sprite);
+		}
+	}
+}
+
+void Game::drawMap(sf::RenderWindow& window)
+{
+	std::vector<sf::Sprite>::const_iterator it;
+	for (it = _map.begin(); it != _map.end(); ++it)
+		window.draw(*it);
 }

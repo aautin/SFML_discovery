@@ -1,46 +1,59 @@
 #include "Move.hpp"
+#include "utils.hpp"
 
-// ------------------- MoveLeft -------------------
-MoveLeft::MoveLeft(sf::Vector2u tileSize) : AAction()
-{}
-
-MoveLeft::~MoveLeft() {}
-
-void MoveLeft::execute(Game& game, Character& character)
+unsigned long getEndTimestamp(sf::Vector2f move)
 {
-	// Implement the logic for moving the character left
-	character.setPosition(character.getPosition().x, character.getPosition().y);
+	float totalDistance = abs(move.x) + abs(move.y);
+	
+	unsigned long currentTime = getCurrentTimeMillisecond();
+	int totalSteps = static_cast<int>(totalDistance / STEP_SIZE + ((static_cast<int>(totalDistance) % STEP_SIZE) != 0 ? 1 : 0));
+
+	return currentTime + totalSteps * STEP_TIME;
 }
 
-// ------------------- MoveRight -------------------
-MoveRight::MoveRight(sf::Vector2u tileSize) : AAction()
-{}
-
-MoveRight::~MoveRight() {}
-
-void MoveLeft::execute(Game& game, Character& character)
+std::vector<unsigned long> getTimestamp(sf::Vector2f move)
 {
-	// Implement the logic for moving the character right
+	std::vector<unsigned long> timestamps;
+
+	float totalDistance = abs(move.x) + abs(move.y);
+	
+	unsigned long currentTime = getCurrentTimeMillisecond();
+	int totalSteps = static_cast<int>(totalDistance / STEP_SIZE + ((static_cast<int>(totalDistance) % STEP_SIZE) != 0 ? 1 : 0));
+	
+	for (int i = 0; i < totalSteps; ++i)
+		timestamps.push_back(currentTime + i * STEP_TIME);
+
+	return timestamps;
 }
 
-// ------------------- MoveUp -------------------
-MoveUp::MoveUp(sf::Vector2u tileSize) : AAction()
-{}
+Move::Move(sf::Vector2f move)
+	: AAction(50, 6, "./assets/1 Characters/1/D_Walk.png", getTimestamp(move), getEndTimestamp(move)),
+	_moveRemaining(move) { printf("Move\n"); }
 
-MoveUp::~MoveUp() {}
+Move::~Move() {}
 
-void MoveUp::execute(Game& game, Character& character)
+void Move::execute(Game& game, Character& character)
 {
-	// Implement the logic for moving the character up
+	sf::Vector2f move(0, 0);
+	if (_moveRemaining.x > 0)
+		move.x = (_moveRemaining.x < STEP_SIZE) ? _moveRemaining.x : STEP_SIZE;
+	if (_moveRemaining.x < 0)
+		move.x = (_moveRemaining.x > -STEP_SIZE) ? _moveRemaining.x : -STEP_SIZE;
+	if (_moveRemaining.y > 0)
+		move.y = (_moveRemaining.y < STEP_SIZE) ? _moveRemaining.y : STEP_SIZE;
+	if (_moveRemaining.y < 0)
+		move.y = (_moveRemaining.y > -STEP_SIZE) ? _moveRemaining.y : -STEP_SIZE;
+
+	character.setPosition(character.getPosition().x + move.x, character.getPosition().y + move.y);
+
+	_moveRemaining = sf::Vector2f(
+		_moveRemaining.x - move.x,
+		_moveRemaining.y - move.y
+	);
 }
 
-// ------------------- MoveDown -------------------
-MoveDown::MoveDown(sf::Vector2u tileSize) : AAction()
-{}
-
-MoveDown::~MoveDown() {}
-
-void MoveDown::execute(Game& game, Character& character)
+bool Move::isFinished() const
 {
-	// Implement the logic for moving the character down
+	// Vérifier si le mouvement est terminé
+	return _moveRemaining.x == 0 && _moveRemaining.y == 0;
 }

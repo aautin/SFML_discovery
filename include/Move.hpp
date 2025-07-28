@@ -5,40 +5,19 @@
 # include "Character.hpp"
 # include "Game.hpp"
 
-class MoveLeft : public AAction
+# define STEP_SIZE 3
+# define STEP_TIME 50
+
+class Move : public AAction
 {
 	public:
-		MoveLeft(sf::Vector2u tileSize);
-		~MoveLeft();
+		Move(sf::Vector2f move);
+		~Move();
 	
 		void execute(Game& game, Character& character) override;
-};
-
-class MoveRight : public AAction
-{
-	public:
-		MoveRight(sf::Vector2u tileSize);
-		~MoveRight();
-
-		void execute(Game& game, Character& character) override;
-};
-
-class MoveUp : public AAction
-{
-	public:
-		MoveUp(sf::Vector2u tileSize);
-		~MoveUp();
-
-		void execute(Game& game, Character& character) override;
-};
-
-class MoveDown : public AAction
-{
-	public:
-		MoveDown(sf::Vector2u tileSize);
-		~MoveDown();
-
-		void execute(Game& game, Character& character) override;
+		bool isFinished() const override;
+	private:
+		sf::Vector2f _moveRemaining;
 };
 
 #endif

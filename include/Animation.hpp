@@ -6,19 +6,21 @@
 class Animation
 {
 	public:
-		Animation(size_t frameSize, size_t frameTime, size_t framesNbs, const sf::Texture& texture, unsigned long startTimestamp);
+		Animation(size_t frameTime, size_t framesNbs, std::string texturePath, unsigned long startTimestamp);
 		~Animation();
 
 		sf::Sprite		getFrame() const;
 		void			setFrame();
 		
 	private:
+		sf::Texture	_texture;
+		sf::Sprite	_obj;
+
 		unsigned long		_startTimestamp;
 		size_t				_frameIndex;
-		size_t const		_frameSize;
+		sf::Vector2u		_frameSize;
 		size_t const		_frameTime;
 		size_t const		_framesNbs;
-		sf::Sprite			_obj;
 };
 
 #endif

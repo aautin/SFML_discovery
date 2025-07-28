@@ -6,18 +6,21 @@
 
 # include "AAction.hpp"
 
+class Game;
 class Character
 {
 	public:
 		Character();
-		~Character();
+		~Character() {};
 
-		void		updateEvent(sf::Event const& event);
-		void		updateLogic(Game& game);
-		sf::Sprite	getRender() const;
+		void		event(sf::Event const& event);
+		void		logic(Game& game);
+		sf::Sprite	render() const;
 
 		void			setPosition(float x, float y);
 		sf::Vector2f	getPosition() const;
+
+		bool			isCharacterKey(sf::Keyboard::Key key) const;
 
 	private:
 		float						_position[2];

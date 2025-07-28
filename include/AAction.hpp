@@ -5,25 +5,28 @@
 # include <SFML/Graphics.hpp>
 
 # include "Animation.hpp"
-# include "Character.hpp"
-# include "Game.hpp"
 
+# define NEVER 0
+
+class Character;
+class Game;
 class AAction
 {
 	public:
-		AAction(Animation animation, std::vector<unsigned long> actionTimestamps, unsigned long endTimestamp);
+		AAction(size_t frameTime, size_t framesNbs, std::string texturePath, 
+                std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp);
 		~AAction();
 
 		void			update(Game& game, Character& actor);
 		sf::Sprite		getFrame() const;
-		bool			isFinished() const;
+		
+		virtual bool	isFinished() const = 0;
 
 	protected:
 		virtual void	execute(Game& game, Character& actor) = 0;
 
 	private:
-		std::vector<unsigned long>	_actionTimestamps;
-		unsigned long				_lastUpdateTimestamp;
+		std::vector<unsigned long>	_executeTimestamps;
 		unsigned long				_endTimestamp;
 		Animation					_animation;
 };

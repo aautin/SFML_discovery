@@ -1,4 +1,6 @@
 #include "sys/time.h"
+#include <iostream>
+#include <string>
 
 #include <SFML/Graphics.hpp>
 
@@ -10,6 +12,17 @@ unsigned long getCurrentTimeMillisecond()
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
+
+// ------------------- Texture loading -------------------
+sf::Texture loadTexture(const std::string& filepath)
+{
+    sf::Texture texture;
+    if (!texture.loadFromFile(filepath)) {
+        printf("Error: Failed to load texture from %s\n", filepath.c_str());
+        // Return an empty texture instead of crashing
+    }
+    return texture;
+}
 
 // ------------------- Sprite appearance -------------------
 void hideSprite(sf::Sprite& sprite)

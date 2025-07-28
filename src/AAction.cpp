@@ -1,9 +1,16 @@
 #include "AAction.hpp"
 #include "utils.hpp"
+#include "Game.hpp"
+#include "Character.hpp"
 
 // ------------------- Constructor & Destructor -------------------
-AAction::AAction(Animation animation, std::vector<unsigned long> actionTimestamps, unsigned long endTimestamp)
-	: _animation(animation), _actionTimestamps(actionTimestamps), _lastUpdateTimestamp(0), _endTimestamp(endTimestamp) {}
+AAction::AAction(size_t frameTime, size_t framesNbs, std::string texturePath,
+                 std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp)
+    : _animation(frameTime, framesNbs, texturePath, getCurrentTimeMillisecond()),
+      _executeTimestamps(executeTimestamps),
+      _endTimestamp(endTimestamp) 
+{
+}
 
 AAction::~AAction() {}
 
@@ -20,19 +27,12 @@ void AAction::update(Game& game, Character& actor)
 {
 	unsigned long currentTime = getCurrentTimeMillisecond();
 
-	std::vector<unsigned long>::iterator it = _actionTimestamps.begin();
-	while (it != _actionTimestamps.end() && *it <= currentTime) {
+	std::vector<unsigned long>::iterator it = _executeTimestamps.begin();
+	while (it != _executeTimestamps.end() && *it <= currentTime) {
 		execute(game, actor);
-		it = _actionTimestamps.erase(it);
-		it = _actionTimestamps.begin();
+		it = _executeTimestamps.erase(it);
+		it = _executeTimestamps.begin();
 	}
 
-	_lastUpdateTimestamp = currentTime;
 	_animation.setFrame();
 }
-
-bool AAction::isFinished() const
-{
-	return _endTimestamp <= getCurrentTimeMillisecond();
-}
-

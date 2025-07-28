@@ -3,6 +3,8 @@
 
 # include <SFML/Graphics.hpp>
 
+# define INFINITE 0
+
 class Animation
 {
 	public:
@@ -11,7 +13,8 @@ class Animation
 
 		sf::Sprite		getFrame() const;
 		void			setFrame();
-		
+		void			setDirection(sf::Angle angle, sf::Vector2f offset);
+
 	private:
 		sf::Texture	_texture;
 		sf::Sprite	_obj;

@@ -5,6 +5,7 @@
 # include <SFML/Graphics.hpp>
 
 # include "AAction.hpp"
+# include "Arrow.hpp"
 
 class Game;
 class Character
@@ -15,19 +16,26 @@ class Character
 
 		void		event(sf::Event const& event);
 		void		logic(Game& game);
-		sf::Sprite	render() const;
+		sf::Sprite	renderAction() const;
+		sf::Sprite	renderArrow() const;
 
 		void			setPosition(float x, float y);
 		sf::Vector2f	getPosition() const;
 
-		void			addInput(sf::Keyboard::Key key);
-		void			removeInput(sf::Keyboard::Key key);
-		bool			isCharacterInput(sf::Keyboard::Key key) const;
-
+		void			addInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key);
+		void			removeInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key);
+		bool			isInput(sf::Keyboard::Key key) const;
+		
 	private:
 		float							_position[2];
-		std::vector<sf::Keyboard::Key>	_input;
+		
+		std::vector<sf::Keyboard::Key>	_arrowInput;
+		std::unique_ptr<Arrow>			_arrow;
+		bool							isArrowInput(sf::Keyboard::Key key) const;
+
+		std::vector<sf::Keyboard::Key>	_actionInput;
 		std::unique_ptr<AAction>		_action;
+		bool							isActionInput(sf::Keyboard::Key key) const;
 };
 
 #endif

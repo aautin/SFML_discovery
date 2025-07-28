@@ -27,10 +27,23 @@ sf::Sprite Animation::getFrame() const
 
 void Animation::setFrame()
 {
+	if (this->_frameTime == INFINITE)
+		return;
+
 	unsigned long timeSinceStart = getCurrentTimeMillisecond() - _startTimestamp;
 	_frameIndex = (timeSinceStart / _frameTime) % _framesNbs;
 	_obj.setTextureRect(
 		sf::IntRect(sf::Vector2i(_frameIndex * _frameSize.x, 0),
 		sf::Vector2i(_frameSize.x, _frameSize.y))
 	);
+}
+
+void Animation::setDirection(sf::Angle angle, sf::Vector2f offset)
+{
+	_obj.setScale(sf::Vector2f(0.5f, 0.5f));
+	offset += sf::Vector2f(_frameSize.x / 4.0f, _frameSize.y / 4.0f);
+
+	_obj.setOrigin(sf::Vector2f(_frameSize.x / 2.0f, _frameSize.y / 2.0f));
+	_obj.setRotation(angle);
+	_obj.setPosition(offset);
 }

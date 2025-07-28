@@ -1,4 +1,6 @@
 #include "Move.hpp"
+#include "Character.hpp"
+#include "Game.hpp"
 #include "utils.hpp"
 
 unsigned long getEndTimestamp(sf::Vector2f move)
@@ -26,9 +28,25 @@ std::vector<unsigned long> getTimestamp(sf::Vector2f move)
 	return timestamps;
 }
 
-Move::Move(sf::Vector2f move)
-	: AAction(50, 6, "./assets/1 Characters/1/D_Walk.png", getTimestamp(move), getEndTimestamp(move)),
-	_moveRemaining(move) { printf("Move\n"); }
+sf::Vector2f calculateMove(sf::Keyboard::Key direction, sf::Vector2u size)
+{
+	sf::Vector2f move(0, 0);
+	if (direction == sf::Keyboard::Key::A)
+		move.x = -(float)(size.x);
+	else if (direction == sf::Keyboard::Key::D)
+		move.x = size.x;
+	else if (direction == sf::Keyboard::Key::W)
+		move.y = -(float)(size.y);
+	else if (direction == sf::Keyboard::Key::S)
+		move.y = size.y;
+
+	return move;
+}
+
+Move::Move(sf::Keyboard::Key direction, sf::Vector2u size)
+	: AAction(50, 6, "./assets/1 Characters/1/D_Walk.png",
+	getTimestamp(calculateMove(direction, size)), getEndTimestamp(calculateMove(direction, size))),
+	_moveRemaining(calculateMove(direction, size)) {}
 
 Move::~Move() {}
 

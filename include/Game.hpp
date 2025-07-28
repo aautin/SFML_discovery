@@ -28,8 +28,8 @@ class Game
 		Character 			_player;
 
 		sf::Texture				_tileTexture;
-		std::vector<sf::Sprite>	_map;
 		sf::Vector2u			_tileSize;
+		std::vector<sf::Sprite>	_map;
 		sf::Vector2u			_mapSize;
 };
 

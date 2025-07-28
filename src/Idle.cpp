@@ -4,14 +4,9 @@
 #include "utils.hpp"
 
 Idle::Idle()
-: AAction(100, 4, "./assets/1 Characters/1/D_Idle.png", {}, NEVER)
-{
-	printf("Idle\n");
-}
+: AAction(100, 4, "./assets/1 Characters/1/D_Idle.png", {}, NEVER) {}
 
-Idle::~Idle()
-{
-}
+Idle::~Idle() {}
 
 void Idle::execute(Game& game, Character& actor) { /* Idle action does nothing */ }
 

@@ -23,12 +23,12 @@ class AAction
 		virtual bool	isFinished() const = 0;
 
 	protected:
-		virtual void	execute(Game& game, Character& actor) = 0;
+		virtual void				execute(Game& game, Character& actor) = 0;
+		Animation					_animation;
 
 	private:
 		std::vector<unsigned long>	_executeTimestamps;
 		unsigned long				_endTimestamp;
-		Animation					_animation;
 };
 
 #endif

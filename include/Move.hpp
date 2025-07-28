@@ -2,16 +2,16 @@
 # define MOVE_HPP
 
 # include "AAction.hpp"
-# include "Character.hpp"
-# include "Game.hpp"
 
 # define STEP_SIZE 3
 # define STEP_TIME 50
 
+class Game;
+class Character;
 class Move : public AAction
 {
 	public:
-		Move(sf::Vector2f move);
+		Move(sf::Keyboard::Key direction, sf::Vector2u size);
 		~Move();
 	
 		void execute(Game& game, Character& character) override;

@@ -20,12 +20,14 @@ class Character
 		void			setPosition(float x, float y);
 		sf::Vector2f	getPosition() const;
 
-		bool			isCharacterKey(sf::Keyboard::Key key) const;
+		void			addInput(sf::Keyboard::Key key);
+		void			removeInput(sf::Keyboard::Key key);
+		bool			isCharacterInput(sf::Keyboard::Key key) const;
 
 	private:
-		float						_position[2];
-		sf::Keyboard::Key			_input;
-		std::unique_ptr<AAction>	_action;
+		float							_position[2];
+		std::vector<sf::Keyboard::Key>	_input;
+		std::unique_ptr<AAction>		_action;
 };
 
 #endif

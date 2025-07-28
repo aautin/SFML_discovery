@@ -25,10 +25,10 @@ void Game::updateEvents()
 		if (event->getIf<sf::Event::Closed>())
 			_window.close();
 		else if (event->getIf<sf::Event::KeyPressed>()
-			&& _player.isCharacterKey(event->getIf<sf::Event::KeyPressed>()->code))
+			&& _player.isCharacterInput(event->getIf<sf::Event::KeyPressed>()->code))
 			_player.event(*event);
 		else if (event->getIf<sf::Event::KeyReleased>()
-			&& _player.isCharacterKey(event->getIf<sf::Event::KeyReleased>()->code))
+			&& _player.isCharacterInput(event->getIf<sf::Event::KeyReleased>()->code))
 			_player.event(*event);
 	}
 }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Game.hpp"
 #include "Character.hpp"
 #include "Idle.hpp"
@@ -6,7 +8,7 @@
 // ------------------- Constructor -------------------
 Character::Character() : 
 	_position{0, 0},
-	_input(sf::Keyboard::Key::Unknown),
+	_input(),
 	_action(std::make_unique<Idle>()) {}
 
 
@@ -14,10 +16,9 @@ Character::Character() :
 void	Character::event(sf::Event const& event)
 {
 	if (event.is<sf::Event::KeyPressed>())
-		_input = event.getIf<sf::Event::KeyPressed>()->code;
-	else if (event.is<sf::Event::KeyReleased>()
-		&& _input == event.getIf<sf::Event::KeyReleased>()->code)
-		_input = sf::Keyboard::Key::Unknown;
+		addInput(event.getIf<sf::Event::KeyPressed>()->code);
+	else if (event.is<sf::Event::KeyReleased>())
+		removeInput(event.getIf<sf::Event::KeyReleased>()->code);
 }
 
 void	Character::logic(Game& game)
@@ -28,9 +29,8 @@ void	Character::logic(Game& game)
 	if (_action)
 		_action->update(game, *this);
 
-	if (_input != sf::Keyboard::Key::Unknown
-		&& (_action == nullptr || dynamic_cast<Idle*>(_action.get()) != nullptr)) {
-		switch (_input) {
+	if (!_input.empty() && (_action == nullptr || dynamic_cast<Idle*>(_action.get()) != nullptr)) {
+		switch (_input.back()) {
 			case sf::Keyboard::Key::A:
 				_action = std::make_unique<Move>(sf::Vector2f(-(float)(game.getTileSize().x), 0));
 				break;
@@ -75,8 +75,21 @@ sf::Vector2f Character::getPosition() const
 }
 
 
-// ------------------- Utils -------------------
-bool Character::isCharacterKey(sf::Keyboard::Key key) const
+// ------------------- Input -------------------
+void Character::addInput(sf::Keyboard::Key key)
+{
+	_input.push_back(key);
+}
+
+void Character::removeInput(sf::Keyboard::Key key)
+{
+	_input.erase(
+        std::remove(_input.begin(), _input.end(), key),
+        _input.end()
+    );
+}
+
+bool Character::isCharacterInput(sf::Keyboard::Key key) const
 {
 	return key == sf::Keyboard::Key::A
 		|| key == sf::Keyboard::Key::D

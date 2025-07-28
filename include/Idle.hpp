@@ -11,7 +11,7 @@ class Character;
 class Idle : public AAction
 {
 	public:
-		Idle();
+		Idle(sf::Vector2f tileSize);
 		~Idle();
 
 		void execute(Game& game, Character& actor) override;

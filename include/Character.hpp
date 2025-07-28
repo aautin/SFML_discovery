@@ -11,7 +11,7 @@ class Game;
 class Character
 {
 	public:
-		Character();
+		Character(sf::Vector2f tileSize);
 		~Character() {};
 
 		void		event(sf::Event const& event);

@@ -5,8 +5,8 @@
 
 // ------------------- Constructor & Destructor -------------------
 AAction::AAction(size_t frameTime, size_t framesNbs, std::string texturePath,
-                 std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp)
-    : _animation(frameTime, framesNbs, texturePath, getCurrentTimeMillisecond()),
+                 std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp, sf::Vector2f tileSize)
+    : _animation(frameTime, framesNbs, texturePath, getCurrentTimeMillisecond(), tileSize),
       _executeTimestamps(executeTimestamps),
       _endTimestamp(endTimestamp) 
 {

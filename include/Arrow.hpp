@@ -10,7 +10,7 @@ class Character;
 class Arrow : public AAction
 {
 	public:
-		Arrow();
+		Arrow(sf::Vector2f tileSize);
 		~Arrow() {};
 	
 		void				update(sf::Keyboard::Key key, Game& game);

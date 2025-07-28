@@ -1,11 +1,11 @@
 #include "Game.hpp"
-#include "Character.hpp"
+// #include "Character.hpp"
 #include "utils.hpp"
 
 
 // ------------------- Constructor -------------------
-Game::Game(std::string title, sf::Vector2u mapSize)
-: _mapSize(mapSize), _tileTexture(loadTexture("./assets/2 Dungeon Tileset/1 Tiles/Tile_20.png"))
+Game::Game(std::string title, sf::Vector2f mapSize, sf::Vector2f tileSize)
+: _mapSize(mapSize), _tileSize(tileSize), _tileTexture(loadTexture("./assets/2 Dungeon Tileset/1 Tiles/Tile_20.png")), _player(tileSize)
 {
 	generateMap();
 
@@ -24,12 +24,12 @@ void Game::updateEvents()
 	{
 		if (event->getIf<sf::Event::Closed>())
 			_window.close();
-		else if (event->getIf<sf::Event::KeyPressed>()
-			&& _player.isInput(event->getIf<sf::Event::KeyPressed>()->code))
-			_player.event(*event);
-		else if (event->getIf<sf::Event::KeyReleased>()
-			&& _player.isInput(event->getIf<sf::Event::KeyReleased>()->code))
-			_player.event(*event);
+		// else if (event->getIf<sf::Event::KeyPressed>()
+			// && _player.isInput(event->getIf<sf::Event::KeyPressed>()->code))
+			// _player.event(*event);
+		// else if (event->getIf<sf::Event::KeyReleased>()
+			// && _player.isInput(event->getIf<sf::Event::KeyReleased>()->code))
+			// _player.event(*event);
 	}
 }
 
@@ -64,12 +64,12 @@ void Game::run()
 // ------------------- Map -------------------
 void Game::generateMap()
 {
-	this->_tileSize = sf::Vector2u(_tileTexture.getSize().x, _tileTexture.getSize().y);
-
 	_map.clear();
-	for (size_t i = 0; i < _mapSize.x; ++i) {
-		for (size_t j = 0; j < _mapSize.y; ++j) {
+	for (float i = 0; i < _mapSize.x; ++i) {
+		for (float j = 0; j < _mapSize.y; ++j) {
 			sf::Sprite sprite(_tileTexture);
+			scale(sprite, _tileTexture, _tileSize);
+			printf("Tile position: %f, %f\n", i * _tileSize.x, j * _tileSize.y);
 			sprite.setPosition(sf::Vector2f(i * _tileSize.x, j * _tileSize.y));
 			_map.push_back(sprite);
 		}
@@ -85,12 +85,12 @@ void Game::drawMap()
 
 
 // ------------------- Getters -------------------
-sf::Vector2u Game::getTileSize() const
+sf::Vector2f Game::getTileSize() const
 {
 	return _tileSize;
 }
 
-sf::Vector2u Game::getMapSize() const
+sf::Vector2f Game::getMapSize() const
 {
 	return _mapSize;
 }

@@ -28,24 +28,24 @@ std::vector<unsigned long> getTimestamp(sf::Vector2f move)
 	return timestamps;
 }
 
-sf::Vector2f calculateMove(sf::Keyboard::Key direction, sf::Vector2u size)
+sf::Vector2f calculateMove(sf::Keyboard::Key direction, sf::Vector2f size)
 {
 	sf::Vector2f move(0, 0);
 	if (direction == sf::Keyboard::Key::A)
-		move.x = -(float)(size.x);
+		move.x = -size.x;
 	else if (direction == sf::Keyboard::Key::D)
 		move.x = size.x;
 	else if (direction == sf::Keyboard::Key::W)
-		move.y = -(float)(size.y);
+		move.y = -size.y;
 	else if (direction == sf::Keyboard::Key::S)
 		move.y = size.y;
 
 	return move;
 }
 
-Move::Move(sf::Keyboard::Key direction, sf::Vector2u size)
+Move::Move(sf::Keyboard::Key direction, sf::Vector2f size)
 	: AAction(50, 6, "./assets/1 Characters/1/D_Walk.png",
-	getTimestamp(calculateMove(direction, size)), getEndTimestamp(calculateMove(direction, size))),
+	getTimestamp(calculateMove(direction, size)), getEndTimestamp(calculateMove(direction, size)), size),
 	_moveRemaining(calculateMove(direction, size)) {}
 
 Move::~Move() {}

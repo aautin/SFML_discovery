@@ -1,8 +1,8 @@
 #include "Arrow.hpp"
 #include "Game.hpp"
 
-Arrow::Arrow()
-	: AAction(INFINITE, 1, "./assets/2 Dungeon Tileset/2 Objects/arrow.png", {}, NEVER)
+Arrow::Arrow(sf::Vector2f tileSize)
+	: AAction(INFINITE, 1, "./assets/2 Dungeon Tileset/2 Objects/arrow.png", {}, NEVER, tileSize)
 {
 	_directionKey = sf::Keyboard::Key::Unknown;
 	_animation.setDirection(sf::degrees(0), sf::Vector2f(0, 0));

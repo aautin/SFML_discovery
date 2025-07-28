@@ -8,13 +8,13 @@
 class Game
 {
 	public:
-		Game(std::string title, sf::Vector2u mapSize);
+		Game(std::string title, sf::Vector2f mapSize, sf::Vector2f tileSize);
 		~Game() {}
 
 		void	run();
 
-		sf::Vector2u	getTileSize() const;
-		sf::Vector2u	getMapSize() const;
+		sf::Vector2f	getTileSize() const;
+		sf::Vector2f	getMapSize() const;
 
 	private:
 		void	updateEvents();
@@ -28,9 +28,9 @@ class Game
 		Character 			_player;
 
 		sf::Texture				_tileTexture;
-		sf::Vector2u			_tileSize;
+		sf::Vector2f			_tileSize;
 		std::vector<sf::Sprite>	_map;
-		sf::Vector2u			_mapSize;
+		sf::Vector2f			_mapSize;
 };
 
 #endif

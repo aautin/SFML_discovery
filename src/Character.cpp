@@ -6,12 +6,12 @@
 #include "Move.hpp"
 
 // ------------------- Constructor -------------------
-Character::Character()
+Character::Character(sf::Vector2f tileSize)
 	: _position{0, 0},
 	_actionInput(),
 	_arrowInput(),
-	_arrow(std::make_unique<Arrow>()),
-	_action(std::make_unique<Idle>())
+	_arrow(std::make_unique<Arrow>(tileSize)),
+	_action(std::make_unique<Idle>(tileSize))
 {}
 
 
@@ -37,7 +37,7 @@ void	Character::logic(Game& game)
 	if (!_actionInput.empty() && (_action == nullptr || dynamic_cast<Idle*>(_action.get()) != nullptr))
 		_action = std::make_unique<Move>(_actionInput.back(), game.getTileSize());
 	if (_action == nullptr)
-		_action = std::make_unique<Idle>();
+		_action = std::make_unique<Idle>(game.getTileSize());
 	_action->update(game, *this);
 
 	if (!_arrowInput.empty())

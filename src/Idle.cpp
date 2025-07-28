@@ -3,8 +3,8 @@
 #include "Character.hpp"
 #include "utils.hpp"
 
-Idle::Idle()
-: AAction(100, 4, "./assets/1 Characters/1/D_Idle.png", {}, NEVER) {}
+Idle::Idle(sf::Vector2f tileSize)
+: AAction(100, 4, "./assets/1 Characters/1/D_Idle.png", {}, NEVER, tileSize) {}
 
 Idle::~Idle() {}
 

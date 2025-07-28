@@ -11,7 +11,7 @@ class Character;
 class Move : public AAction
 {
 	public:
-		Move(sf::Keyboard::Key direction, sf::Vector2u size);
+		Move(sf::Keyboard::Key direction, sf::Vector2f size);
 		~Move();
 	
 		void execute(Game& game, Character& character) override;

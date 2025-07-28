@@ -14,7 +14,7 @@ class AAction
 {
 	public:
 		AAction(size_t frameTime, size_t framesNbs, std::string texturePath, 
-                std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp);
+                std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp, sf::Vector2f tileSize);
 		~AAction();
 
 		void			update(Game& game, Character& actor);

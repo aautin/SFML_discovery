@@ -39,3 +39,12 @@ void showSprite(sf::Sprite& sprite)
 {
 	sprite.setColor(sf::Color(255, 255, 255, 255));
 }
+
+void scale(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f targetSize)
+{
+    float scaleX = targetSize.x / texture.getSize().x;
+    float scaleY = targetSize.y / texture.getSize().y;
+
+    printf("Scaling sprite to: %f x %f\n", scaleX, scaleY);
+    sprite.setScale(sf::Vector2f(scaleX, scaleY));
+}

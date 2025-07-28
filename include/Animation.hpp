@@ -8,7 +8,7 @@
 class Animation
 {
 	public:
-		Animation(size_t frameTime, size_t framesNbs, std::string texturePath, unsigned long startTimestamp);
+		Animation(size_t frameTime, size_t framesNbs, std::string texturePath, unsigned long startTimestamp, sf::Vector2f tileSize);
 		~Animation();
 
 		sf::Sprite		getFrame() const;
@@ -21,7 +21,7 @@ class Animation
 
 		unsigned long		_startTimestamp;
 		size_t				_frameIndex;
-		sf::Vector2u		_frameSize;
+		sf::Vector2f		_frameSize;
 		size_t const		_frameTime;
 		size_t const		_framesNbs;
 };

@@ -3,7 +3,7 @@
 
 // ------------------- Constructor & Destructor -------------------
 Animation::Animation(size_t frameTime, size_t framesNbs,
-					 std::string texturePath, unsigned long startTimestamp)
+					 std::string texturePath, unsigned long startTimestamp, sf::Vector2f tileSize)
 	: _texture(loadTexture(texturePath)),
 	  _obj(_texture),
 	  _startTimestamp(startTimestamp),
@@ -11,7 +11,8 @@ Animation::Animation(size_t frameTime, size_t framesNbs,
 	  _frameTime(frameTime),
 	  _framesNbs(framesNbs)
 {
-	_frameSize = sf::Vector2u(_texture.getSize().x / _framesNbs, _texture.getSize().y);
+	_frameSize = sf::Vector2f(_texture.getSize().x / _framesNbs, _texture.getSize().y);
+	scale(_obj, _texture, tileSize);
 	_obj.setOrigin(sf::Vector2f(_frameSize.x / 4.0f, _frameSize.y / 4.0f));
 	setFrame();
 }

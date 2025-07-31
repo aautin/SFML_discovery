@@ -1,15 +1,20 @@
 #include "Game.hpp"
 
-Game::Game(std::string title, sf::Vector2u mapSize, sf::Vector2f tileSize)
-: _window(sf::VideoMode(sf::Vector2u(mapSize.x * tileSize.x, mapSize.y * tileSize.y)), title),
-  _tileSize(tileSize), _player(), _map(mapSize, tileSize)
+Game::Game(std::string title, std::string mapFilename, sf::Vector2f tileSize)
+: _map(tileSize, mapFilename), _tileSize(tileSize), _player(),
+  _window()
 {
 	_window.setVerticalSyncEnabled(false);
 }
 
 
 // ------------------- Update Game -------------------
-void Game::updateEvents()
+bool Game::isRunning() const
+{
+	return _window.isOpen();
+}
+
+void Game::events()
 {
 	std::optional<sf::Event> event;
 	while (event = _window.pollEvent()) {
@@ -25,12 +30,12 @@ void Game::updateEvents()
 	}
 }
 
-void Game::updateLogic()
+void Game::logic()
 {
 	_player.logic(*this);
 }
 
-void Game::updateRender()
+void Game::render()
 {
 	_window.clear();
 
@@ -45,9 +50,4 @@ void Game::updateRender()
 sf::Vector2f Game::getTileSize() const
 {
 	return _tileSize;
-}
-
-sf::Vector2u Game::getMapSize() const
-{
-	return _map.getMapSize();
 }

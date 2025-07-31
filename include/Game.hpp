@@ -9,15 +9,15 @@
 class Game
 {
 	public:
-		Game(std::string title, sf::Vector2u mapSize, sf::Vector2f tileSize);
+		Game(std::string title, std::string mapFilename, sf::Vector2f tileSize);
 		~Game() {}
 
-		void	updateEvents();
-		void	updateLogic();
-		void	updateRender();
+		bool	isRunning() const;
+		void	events();
+		void	logic();
+		void	render();
 
 		sf::Vector2f	getTileSize() const;
-		sf::Vector2u	getMapSize() const;
 
 	private:
 		sf::RenderWindow	_window;

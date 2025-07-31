@@ -9,13 +9,18 @@
 
 int main()
 {
-    Game game("My Game", sf::Vector2u(10, 10), sf::Vector2f(32, 32));
+    try {
+        Game game("My Game", sf::Vector2u(10, 10), sf::Vector2f(32, 32));
 
-    while (game.isRunning()) {
-        game.events();
-        game.logic();
-        game.render();
+        while (game.isRunning()) {
+            game.events();
+            game.logic();
+            game.render();
+        }
+        return EXIT_SUCCESS;
+        
+    } catch (const std::exception& e) {
+        fprintf(stderr, "Error: %s\n", e.what());
+        return EXIT_FAILURE;
     }
-
-    return EXIT_SUCCESS;
 }

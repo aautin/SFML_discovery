@@ -3,27 +3,22 @@
 
 # include <SFML/Graphics.hpp>
 
-# define INFINITE 0
-
 class Animation
 {
 	public:
-		Animation(size_t frameTime, size_t framesNbs, std::string texturePath, unsigned long startTimestamp, sf::Vector2f tileSize);
-		~Animation();
+		Animation(size_t frameTime, std::string texturePath);
+		~Animation() {}
 
-		sf::Sprite		getFrame() const;
-		void			setFrame();
-		void			setDirection(sf::Angle angle, sf::Vector2f offset);
+		sf::Sprite		getFrame();
 
 	private:
 		sf::Texture	_texture;
-		sf::Sprite	_obj;
 
 		unsigned long		_startTimestamp;
 		size_t				_frameIndex;
-		sf::Vector2f		_frameSize;
+		sf::Vector2u		_frameSize;
 		size_t const		_frameTime;
-		size_t const		_framesNbs;
+		size_t const		_framesNb;
 };
 
 #endif

@@ -1,22 +1,17 @@
 #include "AAction.hpp"
-#include "utils.hpp"
-#include "Game.hpp"
 #include "Character.hpp"
+#include "Game.hpp"
+#include "utils.hpp"
 
 // ------------------- Constructor & Destructor -------------------
-AAction::AAction(size_t frameTime, size_t framesNbs, std::string texturePath,
-                 std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp, sf::Vector2f tileSize)
-    : _animation(frameTime, framesNbs, texturePath, getCurrentTimeMillisecond(), tileSize),
-      _executeTimestamps(executeTimestamps),
-      _endTimestamp(endTimestamp) 
+AAction::AAction(size_t frameTime, std::string texturePath)
+    : _animation(frameTime, texturePath)
 {
 }
 
-AAction::~AAction() {}
-
 
 // ------------------- Getters -------------------
-sf::Sprite AAction::getFrame() const
+sf::Sprite AAction::getFrame()
 {
 	return _animation.getFrame();
 }
@@ -33,6 +28,4 @@ void AAction::update(Game& game, Character& actor)
 		it = _executeTimestamps.erase(it);
 		it = _executeTimestamps.begin();
 	}
-
-	_animation.setFrame();
 }

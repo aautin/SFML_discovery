@@ -22,10 +22,13 @@ class Map
 		Map(std::string mapFilename);
 		~Map() {}
 
-		void			draw(sf::RenderWindow &window, sf::Vector2f tileSize) const;
+		void			render(sf::RenderWindow &window, sf::Vector2u tileSize) const;
+
 		sf::Vector2u	getMapSize() const;
 		TileType&		operator[](sf::Vector2u coords);
 		const TileType&	operator[](sf::Vector2u coords) const;
+
+		sf::Vector2u	extractPlayerPosition();
 
 	private:
 		void	loadTextures();

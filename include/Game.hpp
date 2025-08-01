@@ -9,7 +9,7 @@
 class Game
 {
 	public:
-		Game(std::string title, std::string mapFilename, sf::Vector2f tileSize);
+		Game(std::string title, std::string mapFilename, sf::Vector2u tileSize);
 		~Game() {}
 
 		bool	isRunning() const;
@@ -17,13 +17,13 @@ class Game
 		void	logic();
 		void	render();
 
-		sf::Vector2f	getTileSize() const;
+		sf::Vector2u	getTileSize() const;
 
 	private:
 		sf::RenderWindow	_window;
 		Character 			_player;
 		Map					_map;
-		sf::Vector2f		_tileSize;
+		sf::Vector2u		_tileSize;
 };
 
 #endif

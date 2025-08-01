@@ -5,37 +5,31 @@
 # include <SFML/Graphics.hpp>
 
 # include "AAction.hpp"
-# include "Arrow.hpp"
 
 class Game;
 class Character
 {
 	public:
-		Character(sf::Vector2f tileSize);
-		~Character() {};
+		Character();
+		~Character() {}
 
-		void		event(sf::Event const& event);
-		void		logic(Game& game);
-		sf::Sprite	renderAction() const;
-		sf::Sprite	renderArrow() const;
+		void			event(sf::Event const& event);
+		void			logic(Game& game);
+		void			render(sf::RenderWindow& window, sf::Vector2u tileSize) const;
 
-		void			setPosition(float x, float y);
+		void			setPosition(sf::Vector2f newPosition);
 		sf::Vector2f	getPosition() const;
+		bool			snapPosition();
 
-		void			addInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key);
-		void			removeInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key);
-		bool			isInput(sf::Keyboard::Key key) const;
-		
+		bool			isInput(sf::Keyboard::Key const& key) const;
+
 	private:
-		float							_position[2];
-		
-		std::vector<sf::Keyboard::Key>	_arrowInput;
-		std::unique_ptr<Arrow>			_arrow;
-		bool							isArrowInput(sf::Keyboard::Key key) const;
-
-		std::vector<sf::Keyboard::Key>	_actionInput;
+		sf::Vector2f					_position;
+		std::vector<sf::Keyboard::Key>	_inputs;
 		std::unique_ptr<AAction>		_action;
-		bool							isActionInput(sf::Keyboard::Key key) const;
+	
+		void	addInput(sf::Keyboard::Key const& key);
+		void	removeInput(sf::Keyboard::Key const& key);
 };
 
 #endif

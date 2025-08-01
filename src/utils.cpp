@@ -24,27 +24,87 @@ sf::Texture loadTexture(const std::string& filepath)
     return texture;
 }
 
-// ------------------- Sprite appearance -------------------
-void hideSprite(sf::Sprite& sprite)
+// ------------------- Sprite Getters -------------------
+size_t getFramesNb(sf::Vector2u textureSize)
 {
-	sprite.setColor(sf::Color(255, 255, 255, 0));
+    if (textureSize.x > textureSize.y)
+        return textureSize.x / textureSize.y;
+    else if (textureSize.y > textureSize.x)
+        return textureSize.y / textureSize.x;
+    else
+        return 1;
 }
 
-void fadeSprite(sf::Sprite& sprite)
+sf::Vector2u getFramesSize(sf::Vector2u textureSize)
 {
-	sprite.setColor(sf::Color(255, 255, 255, 100));
+    if (textureSize.x > textureSize.y)
+        textureSize.x = textureSize.y;
+    else if (textureSize.y > textureSize.x)
+        textureSize.y = textureSize.x;
+
+    return textureSize;
 }
 
-void showSprite(sf::Sprite& sprite)
+sf::Vector2f getSpriteSize(sf::Sprite const& sprite)
 {
-	sprite.setColor(sf::Color(255, 255, 255, 255));
+    return sf::Vector2f(
+        static_cast<float>(sprite.getTextureRect().size.x) * sprite.getScale().x,
+        static_cast<float>(sprite.getTextureRect().size.y) * sprite.getScale().y
+    );
 }
 
-void scale(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f targetSize)
-{
-    float scaleX = targetSize.x / texture.getSize().x;
-    float scaleY = targetSize.y / texture.getSize().y;
 
-    printf("Scaling sprite to: %f x %f\n", scaleX, scaleY);
-    sprite.setScale(sf::Vector2f(scaleX, scaleY));
+// ------------------- Sprite Setters -------------------
+void setScale(sf::Sprite& sprite, sf::Vector2f targetSize)
+{
+    sf::Vector2f scale(
+        targetSize.x / static_cast<float>(sprite.getTextureRect().size.x),
+        targetSize.y / static_cast<float>(sprite.getTextureRect().size.y)
+    );
+
+    sprite.setScale(scale);
+}
+
+void setOffsetPosition(sf::Sprite& sprite, sf::Vector2f gridPosition, sf::Vector2u tileSize)
+{
+    sf::Vector2f spriteSize = getSpriteSize(sprite);
+
+    sf::Vector2f offset(
+        (tileSize.x - spriteSize.x) / 2.0f,
+        (tileSize.y - spriteSize.y) / 2.0f
+    );
+
+    sprite.setPosition(sf::Vector2f(
+        gridPosition.x * static_cast<float>(tileSize.x) + offset.x,
+        gridPosition.y * static_cast<float>(tileSize.y) + offset.y
+    ));
+}
+
+
+// ------------------- Vector Operation -------------------
+sf::Vector2f operator*(const sf::Vector2f& lhs, const float rhs)
+{
+    return sf::Vector2f(lhs.x * rhs, lhs.y * rhs);
+}
+
+sf::Vector2u operator*(const sf::Vector2u& lhs, const int rhs)
+{
+    return sf::Vector2u(lhs.x * rhs, lhs.y * rhs);
+}
+
+sf::Vector2u Vector2u(const sf::Vector2f& v)
+{
+    return sf::Vector2u(static_cast<unsigned int>(v.x), static_cast<unsigned int>(v.y));
+}
+
+sf::Vector2f Vector2f(const sf::Vector2u& v)
+{
+    return sf::Vector2f(static_cast<float>(v.x), static_cast<float>(v.y));
+}
+
+
+// ------------------- Other utility functions -------------------
+bool isToleratedDifference(sf::Vector2f value, sf::Vector2f target, float tolerance)
+{
+    return std::abs(value.x - target.x) < tolerance && std::abs(value.y - target.y) < tolerance;
 }

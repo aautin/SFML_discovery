@@ -11,8 +11,8 @@ class Character;
 class Idle : public AAction
 {
 	public:
-		Idle(sf::Vector2f tileSize);
-		~Idle();
+		Idle();
+		~Idle() {}
 
 		void execute(Game& game, Character& actor) override;
 		bool isFinished() const override;

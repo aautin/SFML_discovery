@@ -10,7 +10,7 @@
 int main()
 {
     try {
-        Game game("My Game", sf::Vector2u(10, 10), sf::Vector2f(32, 32));
+        Game game("My Game", "maps/small", sf::Vector2u(64, 64));
 
         while (game.isRunning()) {
             game.events();

@@ -3,7 +3,7 @@
 
 # include "AAction.hpp"
 
-# define STEP_SIZE 3
+# define STEP_SIZE 0.1f
 # define STEP_TIME 50
 
 class Game;
@@ -11,13 +11,14 @@ class Character;
 class Move : public AAction
 {
 	public:
-		Move(sf::Keyboard::Key direction, sf::Vector2f size);
-		~Move();
-	
+		Move(sf::Keyboard::Key direction);
+		~Move() {}
+
 		void execute(Game& game, Character& character) override;
 		bool isFinished() const override;
 	private:
-		sf::Vector2f _moveRemaining;
+		sf::Vector2f 	_moveRemaining;
+		unsigned long	_lastMove;
 };
 
 #endif

@@ -1,12 +1,14 @@
 #include "Game.hpp"
 
-Game::Game(std::string title, std::string mapFilename, sf::Vector2f tileSize)
+Game::Game(std::string title, std::string mapFilename, sf::Vector2u tileSize)
 : _map(mapFilename), _tileSize(tileSize), _window()
 {
 	_window.create(sf::VideoMode::getDesktopMode(), title,
 		sf::Style::Titlebar | sf::Style::Close);
 	_window.setPosition(sf::Vector2i(0, 0));
 	_window.setVerticalSyncEnabled(false);
+
+	_player.setPosition(static_cast<sf::Vector2f>(_map.extractPlayerPosition()));
 }
 
 
@@ -40,16 +42,15 @@ void Game::render()
 {
 	_window.clear();
 
-	_map.draw(_window, _tileSize);
-	_player.draw(_window, _tileSize);
+	_map.render(_window, _tileSize);
+	_player.render(_window, _tileSize);
 
 	_window.display();
 }
 
 
 // ------------------- Getters -------------------
-sf::Vector2f Game::getTileSize() const
+sf::Vector2u Game::getTileSize() const
 {
 	return _tileSize;
 }
-

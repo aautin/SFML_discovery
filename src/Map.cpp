@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "Map.hpp"
+#include "utils.hpp"
 
 Map::Map(std::string mapFilename)
 {
@@ -56,11 +57,11 @@ void Map::loadMap(std::string filename)
 
 	_data = std::make_unique<TileType[]>(static_cast<size_t>(_size.x * _size.y));
 	for (unsigned int y = 0; y < _size.y; ++y) {
-		for (unsigned int x = 0; x < _size.x; ++x) {
+		for (unsigned int x = 0; x < _size.x; ++x)
 			_data[y * _size.x + x] = (x < mapData[y].size()) ? mapData[y][x] : TileType::EMPTY;
-		}
 	}
 
+	printf("Map loaded from %s with size %ux%u\n", filename.c_str(), _size.x, _size.y);
 	_filename = filename;
 }
 
@@ -109,29 +110,34 @@ bool isValidTileType(int value)
 }
 
 
-// ------------------- Draw -------------------
-void Map::draw(sf::RenderWindow &window, sf::Vector2f tileSize) const
+// ------------------- Others -------------------
+void Map::render(sf::RenderWindow &window, sf::Vector2u tileSize) const
 {
-	sf::Vector2u coords(0, 0);
-	while (coords.y < _size.y) {
-		coords.x = 0;
-		while (coords.x < _size.x) {
-			const TileType& tileType = (*this)[coords];
+	for (unsigned int y = 0; y < _size.y; ++y) {
+		for (unsigned int x = 0; x < _size.x; ++x) {
+			const TileType& tileType = (*this)[sf::Vector2u(x, y)];
 			if (tileType == TileType::EMPTY)
 				continue;
 
 			sf::Texture const* texture = _textures.at(tileType);
 			sf::Sprite sprite(*texture);
-			sprite.setPosition(sf::Vector2f(coords.x * tileSize.x, coords.y * tileSize.y));
-			sf::Vector2f scale(
-				tileSize.x / sprite.getTexture().getSize().x,
-				tileSize.y / sprite.getTexture().getSize().y
-			);
-			sprite.setScale(scale);
-			window.draw(sprite);
+			sprite.setPosition(Vector2f(sf::Vector2u(x * tileSize.x, y * tileSize.y)));
+			setScale(sprite, Vector2f(tileSize * 2));
 
-			coords.x++;
+			window.draw(sprite);
 		}
-		coords.y++;
 	}
+}
+
+sf::Vector2u Map::extractPlayerPosition()
+{
+	for (unsigned int y = 0; y < _size.y; ++y) {
+		for (unsigned int x = 0; x < _size.x; ++x) {
+			if ((*this)[sf::Vector2u(x, y)] == TileType::PLAYER) {
+				(*this)[sf::Vector2u(x, y)] = TileType::FLOOR;
+				return sf::Vector2u(x, y);
+			}
+		}
+	}
+	throw std::runtime_error("Player position not found in map");
 }

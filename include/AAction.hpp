@@ -6,29 +6,24 @@
 
 # include "Animation.hpp"
 
-# define NEVER 0
-
 class Character;
 class Game;
 class AAction
 {
 	public:
-		AAction(size_t frameTime, size_t framesNbs, std::string texturePath, 
-                std::vector<unsigned long> executeTimestamps, unsigned long endTimestamp, sf::Vector2f tileSize);
-		~AAction();
+		AAction(size_t frameTime, std::string texturePath);
+		~AAction() {}
 
 		void			update(Game& game, Character& actor);
-		sf::Sprite		getFrame() const;
+		sf::Sprite		getFrame();
 		
 		virtual bool	isFinished() const = 0;
 
 	protected:
-		virtual void				execute(Game& game, Character& actor) = 0;
 		Animation					_animation;
 
-	private:
+		virtual void				execute(Game& game, Character& actor) = 0;
 		std::vector<unsigned long>	_executeTimestamps;
-		unsigned long				_endTimestamp;
 };
 
 #endif

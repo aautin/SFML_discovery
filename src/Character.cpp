@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 
 #include "Game.hpp"
 #include "Character.hpp"
@@ -6,109 +7,90 @@
 #include "Move.hpp"
 
 // ------------------- Constructor -------------------
-Character::Character(sf::Vector2f tileSize)
-	: _position{0, 0},
-	_actionInput(),
-	_arrowInput(),
-	_arrow(std::make_unique<Arrow>(tileSize)),
-	_action(std::make_unique<Idle>(tileSize))
+Character::Character()
+	: _position(0, 0),
+	  _action(std::make_unique<Idle>())
 {}
 
 
 // ------------------- Event Logic Render -------------------
-void	Character::event(sf::Event const& event)
+void Character::event(sf::Event const& event)
 {
-	sf::Keyboard::Key key = event.is<sf::Event::KeyPressed>() ?
-		event.getIf<sf::Event::KeyPressed>()->code : event.getIf<sf::Event::KeyReleased>()->code;
-	auto inputHandler = event.is<sf::Event::KeyPressed>() ? &Character::addInput : &Character::removeInput;
-
-	if (isActionInput(key))
-		(this->*inputHandler)(_actionInput, key);
-	else if (isArrowInput(key))
-		(this->*inputHandler)(_arrowInput, key);
+	if (event.is<sf::Event::KeyPressed>())
+		addInput(event.getIf<sf::Event::KeyPressed>()->code);
+	else if (event.is<sf::Event::KeyReleased>())
+		removeInput(event.getIf<sf::Event::KeyReleased>()->code);
 }
 
-void	Character::logic(Game& game)
+void Character::logic(Game& game)
 {
 	if (_action->isFinished())
-		_action = nullptr;
-	if (_action)
-		_action->update(game, *this);
-	if (!_actionInput.empty() && (_action == nullptr || dynamic_cast<Idle*>(_action.get()) != nullptr))
-		_action = std::make_unique<Move>(_actionInput.back(), game.getTileSize());
-	if (_action == nullptr)
-		_action = std::make_unique<Idle>(game.getTileSize());
-	_action->update(game, *this);
+		_action = std::make_unique<Idle>();
 
-	if (!_arrowInput.empty())
-		_arrow->update(_arrowInput.back(), game);
+	if (dynamic_cast<Idle*>(_action.get()) != nullptr && !_inputs.empty())
+		_action = std::make_unique<Move>(_inputs.back());
+
+	_action->update(game, *this);
 }
 
-sf::Sprite	Character::renderAction() const
+void Character::render(sf::RenderWindow& window, sf::Vector2u tileSize) const
 {
 	sf::Sprite characterSprite = _action->getFrame();
-	characterSprite.setPosition(sf::Vector2f(_position[0], _position[1]));
-
-	return characterSprite;
-}
-
-sf::Sprite	Character::renderArrow() const
-{
-
-	sf::Sprite arrowSprite = _arrow->getFrame();
-	arrowSprite.setPosition(sf::Vector2f(
-		_position[0] + arrowSprite.getPosition().x, _position[1] + arrowSprite.getPosition().y
-	));
-
-	return arrowSprite;
+	setScale(characterSprite, Vector2f(tileSize * 2));
+	setOffsetPosition(characterSprite, _position, tileSize);
+	window.draw(characterSprite);
 }
 
 
 // ------------------- Position -------------------
-void Character::setPosition(float x, float y)
+void Character::setPosition(sf::Vector2f newPosition)
 {
-	_position[0] = x;
-	_position[1] = y;
+	_position = newPosition;
 }
 
 sf::Vector2f Character::getPosition() const
 {
-	return sf::Vector2f(_position[0], _position[1]);
+	return _position;
+}
+
+bool Character::snapPosition()
+{
+	sf::Vector2f snappedPosition = _position;
+
+	snappedPosition.x = std::round(snappedPosition.x);
+	snappedPosition.y = std::round(snappedPosition.y);
+
+	if (isToleratedDifference(_position, snappedPosition, 0.01f)) {
+		_position = snappedPosition;
+		return true;
+	}
+	return false;
 }
 
 
 // ------------------- Input -------------------
-void Character::addInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key)
+void Character::addInput(sf::Keyboard::Key const& key)
 {
-	input.push_back(key);
+	_inputs.push_back(key);
 }
 
-void Character::removeInput(std::vector<sf::Keyboard::Key>& input, sf::Keyboard::Key key)
+void Character::removeInput(sf::Keyboard::Key const& key)
 {
-	input.erase(
-        std::remove(input.begin(), input.end(), key),
-        input.end()
+	_inputs.erase(
+        std::remove(_inputs.begin(), _inputs.end(), key),
+        _inputs.end()
     );
 }
 
-bool Character::isActionInput(sf::Keyboard::Key key) const
+bool Character::isInput(sf::Keyboard::Key const& key) const
 {
-	return key == sf::Keyboard::Key::A
-		|| key == sf::Keyboard::Key::D
-		|| key == sf::Keyboard::Key::W
-		|| key == sf::Keyboard::Key::S
-		|| key == sf::Keyboard::Key::Space;
-}
-
-bool Character::isArrowInput(sf::Keyboard::Key key) const
-{
-	return key == sf::Keyboard::Key::Up
-		|| key == sf::Keyboard::Key::Down
-		|| key == sf::Keyboard::Key::Left
-		|| key == sf::Keyboard::Key::Right;
-}
-
-bool Character::isInput(sf::Keyboard::Key key) const
-{
-	return isActionInput(key) || isArrowInput(key);
+	switch (key)
+	{
+		case sf::Keyboard::Key::A:
+		case sf::Keyboard::Key::D:
+		case sf::Keyboard::Key::W:
+		case sf::Keyboard::Key::S:
+			return true;
+	}
+	return false;
 }

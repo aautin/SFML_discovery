@@ -1,8 +1,9 @@
-#include "sys/time.h"
+#include <math.h>
 #include <iostream>
 #include <string>
-
 #include <SFML/Graphics.hpp>
+
+#include "sys/time.h"
 
 // ------------------- Time -------------------
 unsigned long getCurrentTimeMillisecond()
@@ -70,8 +71,8 @@ void setOffsetPosition(sf::Sprite& sprite, sf::Vector2f gridPosition, sf::Vector
     sf::Vector2f spriteSize = getSpriteSize(sprite);
 
     sf::Vector2f offset(
-        (tileSize.x - spriteSize.x) / 2.0f,
-        (tileSize.y - spriteSize.y) / 2.0f
+        (static_cast<float>(tileSize.x - spriteSize.x) / 2.0f),
+        (static_cast<float>(tileSize.y - spriteSize.y) / 2.0f)
     );
 
     sprite.setPosition(sf::Vector2f(
@@ -94,7 +95,7 @@ sf::Vector2u operator*(const sf::Vector2u& lhs, const int rhs)
 
 sf::Vector2u Vector2u(const sf::Vector2f& v)
 {
-    return sf::Vector2u(static_cast<unsigned int>(v.x), static_cast<unsigned int>(v.y));
+    return sf::Vector2u(std::round(v.x), std::round(v.y));
 }
 
 sf::Vector2f Vector2f(const sf::Vector2u& v)
@@ -107,4 +108,15 @@ sf::Vector2f Vector2f(const sf::Vector2u& v)
 bool isToleratedDifference(sf::Vector2f value, sf::Vector2f target, float tolerance)
 {
     return std::abs(value.x - target.x) < tolerance && std::abs(value.y - target.y) < tolerance;
+}
+
+sf::Vector2f directionToMove(sf::Keyboard::Key direction)
+{
+    switch (direction) {
+        case sf::Keyboard::Key::A: return sf::Vector2f(-1, 0);
+        case sf::Keyboard::Key::D: return sf::Vector2f(1, 0);
+        case sf::Keyboard::Key::W: return sf::Vector2f(0, -1);
+        case sf::Keyboard::Key::S: return sf::Vector2f(0, 1);
+        default: return sf::Vector2f(0, 0);
+    }
 }

@@ -54,3 +54,13 @@ sf::Vector2u Game::getTileSize() const
 {
 	return _tileSize;
 }
+
+TileType& Game::operator[](sf::Vector2u coords)
+{
+	return _map[coords];
+}
+
+const TileType& Game::operator[](sf::Vector2u coords) const
+{
+	return _map[coords];
+}

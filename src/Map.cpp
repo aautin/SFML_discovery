@@ -122,7 +122,7 @@ void Map::render(sf::RenderWindow &window, sf::Vector2u tileSize) const
 			sf::Texture const* texture = _textures.at(tileType);
 			sf::Sprite sprite(*texture);
 			sprite.setPosition(Vector2f(sf::Vector2u(x * tileSize.x, y * tileSize.y)));
-			setScale(sprite, Vector2f(tileSize * 2));
+			setScale(sprite, Vector2f(tileSize));
 
 			window.draw(sprite);
 		}

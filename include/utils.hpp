@@ -26,5 +26,6 @@ sf::Vector2f	Vector2f(const sf::Vector2u& v);
 
 // ------------------- Other utility functions -------------------
 bool			isToleratedDifference(sf::Vector2f value, sf::Vector2f target, float tolerance);
+sf::Vector2f	directionToMove(sf::Keyboard::Key direction);
 
 #endif

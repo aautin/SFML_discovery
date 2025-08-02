@@ -23,6 +23,6 @@ sf::Sprite Animation::getFrame()
 		sf::Vector2i(_frameIndex * _frameSize.x, 0),
 		sf::Vector2i(_frameSize.x, _frameSize.y)
 	));
-	sprite.setOrigin(sf::Vector2f(_frameSize.x / 2.0f, _frameSize.y / 2.0f));
+	// sprite.setOrigin(sf::Vector2f(_frameSize.x / 2.0f, _frameSize.y / 2.0f));
 	return sprite;
 }

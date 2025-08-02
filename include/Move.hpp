@@ -4,7 +4,7 @@
 # include "AAction.hpp"
 
 # define STEP_SIZE 0.1f
-# define STEP_TIME 50
+# define RUN_SPEED 50
 
 class Game;
 class Character;
@@ -18,7 +18,6 @@ class Move : public AAction
 		bool isFinished() const override;
 	private:
 		sf::Vector2f 	_moveRemaining;
-		unsigned long	_lastMove;
 };
 
 #endif

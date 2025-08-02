@@ -17,6 +17,9 @@ class Game
 		void	logic();
 		void	render();
 
+		TileType& operator[](sf::Vector2u coords);
+		const TileType& operator[](sf::Vector2u coords) const;
+
 		sf::Vector2u	getTileSize() const;
 
 	private:

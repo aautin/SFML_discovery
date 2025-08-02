@@ -27,8 +27,13 @@ void Character::logic(Game& game)
 	if (_action->isFinished())
 		_action = std::make_unique<Idle>();
 
-	if (dynamic_cast<Idle*>(_action.get()) != nullptr && !_inputs.empty())
-		_action = std::make_unique<Move>(_inputs.back());
+	if (dynamic_cast<Idle*>(_action.get()) != nullptr && !_inputs.empty()) {
+		sf::Vector2f move = directionToMove(_inputs.back());
+		printf("Move: %f x %f\n", move.x, move.y);
+		printf("Position: %f x %f\n", _position.x, _position.y);
+		if (game[sf::Vector2u(_position.x + move.x, _position.y + move.y)] == TileType::FLOOR)
+			_action = std::make_unique<Move>(_inputs.back());
+	}
 
 	_action->update(game, *this);
 }

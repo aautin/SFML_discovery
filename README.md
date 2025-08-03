@@ -1,8 +1,8 @@
-# 🎮 Cross-Platform SFML Game
+# 🎮 SFML game-oriented practice
 
 ## ✨ Features
 
-- **Cross-platform builds**: Automatic generation of Linux and Windows executables
+- **Cross-OS builds**: Automatic generation of Linux and Windows executables
 - **Docker-based build system**: Consistent, reproducible builds
 - **SFML from source**: Complete control over the graphics library
 - **Simple game demo**: Window with green circle rendering to test SFML functionality
@@ -31,7 +31,8 @@ tar -x -f assets.tar.gz
 ## 📁 Project Structure
 
 ```
-├── src/                   # Main game source code
+├── src/                   # Game header files
+├── src/                   # Game source code
 ├── assets/                # Extracted assets
 ├── assets.tar.gz          # Archived assets
 ├── docker/
@@ -57,10 +58,11 @@ tar -x -f assets.tar.gz
 - Opens an SFML window
 - 1 character to control :
 	- AWSD movement keys
-	- shooting with space key
-	- cooldown after shooting
+ 	- walking and idle animations
+ 	- some collisions
+  	- map files parsing
 - Character movements are grid-based
-- Absolutely no goal and no collision for now
+- Absolutely no goal in this game, just testing the graphic library
 
 ## 🗂️ Assets for development
 
@@ -72,9 +74,4 @@ tar -x -f assets.tar.gz
 - Git
 - Tar 
 
-## 🎮 Play the game
-
-Latest versions are available here:
-👉 [Releases](https://github.com/aautin/game_from_scratch/releases)
-
-No dependencies required. Download, extract, and run.
+No other dependencies required. Clone, build and run to play !

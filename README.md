@@ -5,11 +5,8 @@
 - **Cross-OS builds**: Automatic generation of Linux and Windows executables
 - **Docker-based build system**: Consistent, reproducible builds
 - **SFML from source**: Complete control over the graphics library
-- **Simple game demo**: Window with green circle rendering to test SFML functionality
 
 ## 🚀 Quick Start
-
-### Building Both Platforms
 
 1. Clone the repository:
 ```bash
@@ -43,6 +40,7 @@ tar -x -f assets.tar.gz
 │   ├── linux/             # Linux executable output
 │   └── windows/           # Windows executable output
 ├── build.sh               # Main build script
+├── maps/                  # Map files
 └── CMakeLists.txt         # CMake configuration
 ```
 
@@ -53,14 +51,14 @@ tar -x -f assets.tar.gz
 - **SFML**: Built from source with all dependencies included
 - **Dependencies**: Automatically fetched and built (FreeType, OGG, Vorbis, FLAC)
 
-## 🎯 Game Features
+## 🎯 Pseudo-Game Features
 
 - Opens an SFML window
 - 1 character to control :
 	- AWSD movement keys
  	- walking and idle animations
  	- some collisions
-  	- map files parsing
+- map file parsing
 - Character movements are grid-based
 - Absolutely no goal in this game, just testing the graphic library
 
